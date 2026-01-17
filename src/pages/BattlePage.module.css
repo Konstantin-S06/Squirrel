@@ -1,0 +1,161 @@
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+}
+
+/* Active Shield Timer - Top Right */
+.shieldTimer {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-width: 150px;
+}
+
+.timerLabel {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timerValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #667eea;
+  font-family: 'Courier New', monospace;
+}
+
+/* Battle Random Button - Left Side */
+.battleButtonContainer {
+  position: absolute;
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.battleRandomButton {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  padding: 25px 50px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 15px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.battleRandomButton:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+}
+
+.battleRandomButton:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.battleRandomButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #ccc 0%, #999 100%);
+}
+
+/* Battle Reset Timer - Bottom Left */
+.resetTimer {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-width: 150px;
+}
+
+/* Squirrel with Toy Sword - Bottom Right */
+.squirrelContainer {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.squirrelWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.squirrel {
+  font-size: 8rem;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+  animation: bounce 2s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+.sword {
+  font-size: 4rem;
+  animation: swing 1.5s ease-in-out infinite;
+  transform-origin: top center;
+  margin-left: -40px;
+  margin-top: -30px;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes swing {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .battleButtonContainer {
+    left: 20px;
+  }
+  
+  .battleRandomButton {
+    padding: 20px 40px;
+    font-size: 1.2rem;
+  }
+  
+  .squirrel {
+    font-size: 6rem;
+  }
+  
+  .sword {
+    font-size: 3rem;
+  }
+}
