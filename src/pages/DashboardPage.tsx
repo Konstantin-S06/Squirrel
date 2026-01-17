@@ -52,7 +52,7 @@ const DashboardPage: React.FC = () => {
   }, []);
 
   const handleEdit = () => {
-    console.log('Edit clicked');
+    navigate('/edit-avatar');
   };
 
   const handleBattle = () => {

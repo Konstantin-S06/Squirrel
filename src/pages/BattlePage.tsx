@@ -71,6 +71,11 @@ const BattlePage: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      {/* Back to Dashboard Button - Top Left */}
+      <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
+        ← Back to Dashboard
+      </button>
+
       {/* Active Shield Timer - Top Right */}
       <div className={styles.shieldTimer}>
         <div className={styles.timerLabel}>Active Shield</div>
