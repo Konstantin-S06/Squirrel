@@ -56,7 +56,7 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleBattle = () => {
-    console.log('Battle clicked');
+    navigate('/battle');
   };
 
   const handleFriends = () => {
