@@ -1,0 +1,260 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Result Header */
+.headerWin {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  padding: 30px;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+}
+
+.headerLose {
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+  padding: 30px;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+}
+
+.resultTitle {
+  color: white;
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Rewards Section */
+.rewardsSection {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #f8f9fa;
+}
+
+.rewardItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.rewardItem:hover {
+  transform: translateY(-2px);
+}
+
+.rewardIcon {
+  font-size: 1.8rem;
+}
+
+.rewardLabel {
+  font-weight: 600;
+  color: #495057;
+  flex: 1;
+}
+
+.rewardValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.rewardValuePositive {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.rewardValueNegative {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #dc3545;
+}
+
+/* Opponent Section */
+.opponentSection {
+  padding: 25px;
+  border-top: 1px solid #e9ecef;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #343a40;
+  margin: 0 0 15px 0;
+}
+
+.opponentCard {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.opponentAvatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.opponentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.defaultAvatar {
+  font-size: 3rem;
+}
+
+.opponentInfo {
+  flex: 1;
+  color: white;
+}
+
+.opponentName {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.opponentStats {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Common Ground Section */
+.commonGroundSection {
+  padding: 25px;
+  border-top: 1px solid #e9ecef;
+}
+
+.placeholder {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.placeholder p:first-child {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.placeholderText {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Close Button */
+.closeButton {
+  width: calc(100% - 50px);
+  margin: 0 25px 25px 25px;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.closeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.closeButton:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .resultTitle {
+    font-size: 1.5rem;
+  }
+
+  .rewardValue,
+  .rewardValuePositive,
+  .rewardValueNegative {
+    font-size: 1.2rem;
+  }
+
+  .opponentCard {
+    padding: 15px;
+  }
+
+  .opponentAvatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .defaultAvatar {
+    font-size: 2.5rem;
+  }
+
+  .opponentName {
+    font-size: 1.1rem;
+  }
+}
