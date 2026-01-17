@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import BattlePage from './pages/BattlePage';
+import FriendsPage from './pages/FriendsPage';
 
 const App: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/battle" element={<BattlePage />} />
+        <Route path="/friends" element={<FriendsPage />} />
       </Routes>
     </BrowserRouter>
   );
