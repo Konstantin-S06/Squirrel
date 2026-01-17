@@ -7,7 +7,7 @@ import FriendsPage from './pages/FriendsPage';
 import CanvasSetupPage from "./pages/CanvasSetupPage";
 import EditAvatarPage from './pages/EditAvatarPage';
 import AboutPage from './pages/AboutPage';
-import CourseQuestsPage from './pages/CourseQuestsPage';
+import CoursesPage from './pages/CoursesPage';
 
 const App: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const App: React.FC = () => {
         <Route path="/canvas-setup" element={<CanvasSetupPage />} />
         <Route path="/edit-avatar" element={<EditAvatarPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/quests" element={<CourseQuestsPage />} />
+        <Route path="/courses" element={<CoursesPage />} />
       </Routes>
     </BrowserRouter>
   );

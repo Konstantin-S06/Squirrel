@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import CourseSelector from '../components/CourseSelector';
 import QuestsTable from '../components/QuestsTable';
 import Leaderboard from '../components/Leaderboard';
-import styles from './CourseQuestsPage.module.css';
+import styles from './CoursesPage.module.css';
 
-const CourseQuestsPage: React.FC = () => {
+const CoursesPage: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState('CSC110');
 
   return (
@@ -25,4 +25,4 @@ const CourseQuestsPage: React.FC = () => {
   );
 };
 
-export default CourseQuestsPage;
+export default CoursesPage;
