@@ -5,6 +5,15 @@
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+}
+
+.headerWrapper {
+  width: 100%;
+}
+
+.contentWrapper {
+  flex: 1;
+  display: flex;
   position: relative;
 }
 
@@ -118,8 +127,8 @@
     align-self: flex-start;
   }
 
-  .container {
-    align-items: flex-start;
+  .contentWrapper {
+    flex-direction: column;
   }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import styles from './EditAvatarPage.module.css';
 
 const EditAvatarPage: React.FC = () => {
@@ -34,6 +35,7 @@ const EditAvatarPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      <Header />
       <header className={styles.header}>
         <button onClick={handleCancel} className={styles.backButton}>
           ← Back to Dashboard

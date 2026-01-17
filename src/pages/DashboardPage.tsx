@@ -5,6 +5,7 @@ import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
 import AcornCounter from '../components/AcornCounter';
 import ActivityJournal from '../components/ActivityJournal';
+import Header from '../components/Header';
 import styles from './DashboardPage.module.css';
 
 interface Activity {
@@ -69,30 +70,35 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {/* Left Section: Friends & Courses */}
-      <div className={styles.leftSection}>
-        <button onClick={handleFriends} className={styles.friendsButton}>
-          👥 Friends
-        </button>
-        <button onClick={handleCourses} className={styles.coursesButton}>
-          📚 Courses
-        </button>
+      <div className={styles.headerWrapper}>
+        <Header />
       </div>
-
-      {/* Top Right Section: Acorn Counter & Journal */}
-      <div className={styles.topRightSection}>
-        <AcornCounter acorns={acorns} />
-        <ActivityJournal activities={activities} />
-      </div>
-
-      <main className={styles.main}>
-        <PlayerStats level="-" currentXP="-" maxXP="-" />
-        <AvatarCircle />
-        <div className={styles.actions}>
-          <ActionButton label="Edit" onClick={handleEdit} variant="primary" />
-          <ActionButton label="Battle" onClick={handleBattle} variant="danger" />
+      <div className={styles.contentWrapper}>
+        {/* Left Section: Friends & Courses */}
+        <div className={styles.leftSection}>
+          <button onClick={handleFriends} className={styles.friendsButton}>
+            👥 Friends
+          </button>
+          <button onClick={handleCourses} className={styles.coursesButton}>
+            📚 Courses
+          </button>
         </div>
-      </main>
+
+        {/* Top Right Section: Acorn Counter & Journal */}
+        <div className={styles.topRightSection}>
+          <AcornCounter acorns={acorns} />
+          <ActivityJournal activities={activities} />
+        </div>
+
+        <main className={styles.main}>
+          <PlayerStats level="-" currentXP="-" maxXP="-" />
+          <AvatarCircle />
+          <div className={styles.actions}>
+            <ActionButton label="Edit" onClick={handleEdit} variant="primary" />
+            <ActionButton label="Battle" onClick={handleBattle} variant="danger" />
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
