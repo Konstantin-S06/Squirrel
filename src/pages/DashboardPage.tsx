@@ -63,12 +63,21 @@ const DashboardPage: React.FC = () => {
     navigate('/friends');
   };
 
+  const handleCourses = () => {
+    navigate('/courses');
+  };
+
   return (
     <div className={styles.container}>
-      {/* Friends Button - Top Left */}
-      <button onClick={handleFriends} className={styles.friendsButton}>
-        👥 Friends
-      </button>
+      {/* Left Section: Friends & Courses */}
+      <div className={styles.leftSection}>
+        <button onClick={handleFriends} className={styles.friendsButton}>
+          👥 Friends
+        </button>
+        <button onClick={handleCourses} className={styles.coursesButton}>
+          📚 Courses
+        </button>
+      </div>
 
       {/* Top Right Section: Acorn Counter & Journal */}
       <div className={styles.topRightSection}>

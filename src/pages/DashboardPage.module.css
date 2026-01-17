@@ -8,11 +8,18 @@
   position: relative;
 }
 
-/* Friends Button - Top Left */
-.friendsButton {
+/* Left Section: Friends & Courses */
+.leftSection {
   position: absolute;
   top: 20px;
   left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.friendsButton {
   background: rgba(255, 255, 255, 0.95);
   color: #2d5f3f;
   border: none;
@@ -23,7 +30,6 @@
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 10;
 }
 
 .friendsButton:hover {
@@ -32,6 +38,28 @@
 }
 
 .friendsButton:active {
+  transform: translateY(0);
+}
+
+.coursesButton {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2d5f3f;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.coursesButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.coursesButton:active {
   transform: translateY(0);
 }
 
@@ -84,7 +112,7 @@
     margin-bottom: 1rem;
   }
 
-  .friendsButton {
+  .leftSection {
     position: static;
     margin: 1rem;
     align-self: flex-start;
