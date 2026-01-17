@@ -1,0 +1,264 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2d5f3f;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: 700;
+  margin: 0;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.previewSection {
+  display: flex;
+  justify-content: center;
+}
+
+.previewCard {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-width: 300px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: #2d5f3f;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.avatarPreview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+}
+
+.avatarPreview:hover {
+  transform: scale(1.05);
+}
+
+.previewEmoji {
+  font-size: 5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.previewText {
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.selectionSection {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.avatarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.avatarOption {
+  aspect-ratio: 1;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.avatarOption:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatarOption.selected {
+  border-color: #2d5f3f;
+  background: #e8f5e9;
+  box-shadow: 0 4px 15px rgba(45, 95, 63, 0.3);
+}
+
+.avatarEmoji {
+  font-size: 2.5rem;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.colorOption {
+  aspect-ratio: 1;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.colorOption:hover {
+  transform: translateY(-2px) scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.colorOption.selected {
+  border-color: #333;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.checkmark {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.cancelButton {
+  background: rgba(255, 255, 255, 0.95);
+  color: #666;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 150px;
+}
+
+.cancelButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 150px;
+}
+
+.saveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.saveButton:active,
+.cancelButton:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .avatarGrid {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  }
+
+  .avatarPreview {
+    width: 120px;
+    height: 120px;
+  }
+
+  .previewEmoji {
+    font-size: 4rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .saveButton {
+    width: 100%;
+  }
+}
