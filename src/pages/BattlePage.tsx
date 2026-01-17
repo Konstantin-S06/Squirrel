@@ -1,48 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import { auth } from '../firebase/firebase';
+import { fetchUserData, findRandomOpponent, executeBattle } from '../services/battleService';
+import { getTimeUntilNextBattle, getShieldTimeRemaining, canBattle } from '../utils/battleUtils';
+import BattleResultModal from '../components/BattleResultModal';
 import styles from './BattlePage.module.css';
+
+interface BattleResultData {
+  won: boolean;
+  xpGained: number;
+  acornsChange: number;
+  opponentData: {
+    name: string;
+    level: number;
+    xp: number;
+    avatarUrl: string;
+  };
+}
 
 const BattlePage: React.FC = () => {
   const navigate = useNavigate();
   const [shieldTime, setShieldTime] = useState<number>(0); // Shield timer in seconds
   const [resetTime, setResetTime] = useState<number>(0); // Battle reset timer in seconds
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [showResultModal, setShowResultModal] = useState<boolean>(false);
+  const [battleResult, setBattleResult] = useState<BattleResultData | null>(null);
 
-  // Shield timer logic (24 hours = 86400 seconds)
+  // Load timers from Firestore
   useEffect(() => {
-    const loadShieldTimer = () => {
-      const savedTime = localStorage.getItem('shieldEndTime');
-      if (savedTime) {
-        const endTime = parseInt(savedTime, 10);
-        const now = Date.now();
-        const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
-        setShieldTime(remaining);
-      }
+    const loadTimers = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userData = await fetchUserData(user.uid);
+      if (!userData) return;
+
+      const shieldRemaining = getShieldTimeRemaining(userData.shieldEndTime);
+      const battleRemaining = getTimeUntilNextBattle(userData.lastBattleTime);
+
+      setShieldTime(shieldRemaining);
+      setResetTime(battleRemaining);
     };
 
-    loadShieldTimer();
+    loadTimers();
+
+    // Update timers every second
     const interval = setInterval(() => {
-      loadShieldTimer();
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Battle reset timer logic (24 hours = 86400 seconds)
-  useEffect(() => {
-    const loadResetTimer = () => {
-      const savedTime = localStorage.getItem('battleResetTime');
-      if (savedTime) {
-        const endTime = parseInt(savedTime, 10);
-        const now = Date.now();
-        const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
-        setResetTime(remaining);
-      }
-    };
-
-    loadResetTimer();
-    const interval = setInterval(() => {
-      loadResetTimer();
+      setShieldTime((prev) => Math.max(0, prev - 1));
+      setResetTime((prev) => Math.max(0, prev - 1));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -55,19 +62,69 @@ const BattlePage: React.FC = () => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleBattleRandom = () => {
-    console.log('Battle Random clicked');
-    // TODO: Implement battle random logic
-    // For now, just set timers (24 hours from now)
-    const now = Date.now();
-    const shieldEndTime = now + (24 * 60 * 60 * 1000); // 24 hours
-    const resetEndTime = now + (24 * 60 * 60 * 1000); // 24 hours
-    
-    localStorage.setItem('shieldEndTime', shieldEndTime.toString());
-    localStorage.setItem('battleResetTime', resetEndTime.toString());
-    
-    setShieldTime(24 * 60 * 60);
-    setResetTime(24 * 60 * 60);
+  const handleBattleRandom = async () => {
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        setError('You must be logged in to battle');
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch current user data
+      const userData = await fetchUserData(user.uid);
+      if (!userData) {
+        setError('Could not load your user data');
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if user can battle (8 hour cooldown)
+      if (!canBattle(userData.lastBattleTime)) {
+        setError('Battle cooldown not expired yet!');
+        setIsLoading(false);
+        return;
+      }
+
+      // Find random opponent
+      const opponent = await findRandomOpponent(user.uid);
+      if (!opponent) {
+        setError('No opponents available. Try again later!');
+        setIsLoading(false);
+        return;
+      }
+
+      // Execute battle
+      const result = await executeBattle(user.uid, userData, opponent);
+
+      // Set battle result for modal
+      setBattleResult({
+        won: result.won,
+        xpGained: result.attacker.xpGained,
+        acornsChange: result.attacker.acornsChange,
+        opponentData: result.opponentData,
+      });
+
+      // Update timers (8 hours from now)
+      const eightHoursInSeconds = 8 * 60 * 60;
+      setResetTime(eightHoursInSeconds);
+
+      // Show results modal
+      setShowResultModal(true);
+      setIsLoading(false);
+    } catch (err: any) {
+      console.error('Battle error:', err);
+      setError('An error occurred during battle. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowResultModal(false);
+    setBattleResult(null);
   };
 
   return (
@@ -87,16 +144,17 @@ const BattlePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Battle Random Button - Left Side */}
-        <div className={styles.battleButtonContainer}>
-          <button 
-            className={styles.battleRandomButton}
-            onClick={handleBattleRandom}
-            disabled={resetTime > 0}
-          >
-            Battle Random
-          </button>
-        </div>
+      {/* Battle Random Button - Left Side */}
+      <div className={styles.battleButtonContainer}>
+        <button
+          className={styles.battleRandomButton}
+          onClick={handleBattleRandom}
+          disabled={resetTime > 0 || isLoading}
+        >
+          {isLoading ? 'Battling...' : 'Battle Random'}
+        </button>
+        {error && <div className={styles.errorMessage}>{error}</div>}
+      </div>
 
         {/* Battle Reset Timer - Bottom Left */}
         <div className={styles.resetTimer}>
@@ -114,6 +172,18 @@ const BattlePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Battle Result Modal */}
+      {battleResult && (
+        <BattleResultModal
+          isOpen={showResultModal}
+          won={battleResult.won}
+          xpGained={battleResult.xpGained}
+          acornsChange={battleResult.acornsChange}
+          opponentData={battleResult.opponentData}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
