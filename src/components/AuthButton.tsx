@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import styles from './AuthButton.module.css';
 
 const AuthButton: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -34,6 +36,7 @@ const AuthButton: React.FC = () => {
     try {
       await signOut(auth);
       console.log('User signed out');
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
     }

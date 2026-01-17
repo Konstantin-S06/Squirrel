@@ -4,7 +4,6 @@
   background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
   display: flex;
   flex-direction: column;
-  padding: 2rem;
 }
 
 .header {
@@ -12,6 +11,8 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
+  padding: 0 2rem;
+  padding-top: 1rem;
 }
 
 .backButton {
@@ -42,6 +43,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: 0 2rem 2rem;
 }
 
 .friendsList {
@@ -175,8 +177,13 @@
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem;
+  .header {
+    padding: 0 1rem;
+    padding-top: 1rem;
+  }
+
+  .main {
+    padding: 0 1rem 1rem;
   }
 
   .title {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AppHeader from '../components/AppHeader';
 import styles from './FriendsPage.module.css';
 
 interface Friend {
@@ -30,6 +31,7 @@ const FriendsPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      <AppHeader />
       <header className={styles.header}>
         <button onClick={handleBack} className={styles.backButton}>
           ← Back to Dashboard

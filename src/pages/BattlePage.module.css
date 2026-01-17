@@ -1,9 +1,15 @@
 .container {
-  position: relative;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  flex: 1;
+  position: relative;
 }
 
 /* Back to Dashboard Button - Top Left */

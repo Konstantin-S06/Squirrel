@@ -2,7 +2,8 @@
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .layout {
@@ -11,7 +12,8 @@
   gap: 2rem;
   max-width: 1600px;
   margin: 0 auto;
-  height: calc(100vh - 4rem);
+  padding: 2rem;
+  flex: 1;
 }
 
 .leftColumn {
