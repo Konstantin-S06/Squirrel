@@ -1,16 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PlayerStats from '../components/PlayerStats';
 import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
 import styles from './DashboardPage.module.css';
 
 const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleEdit = () => {
     console.log('Edit clicked');
   };
 
   const handleBattle = () => {
-    console.log('Battle clicked');
+    navigate('/battle');
   };
 
   return (
