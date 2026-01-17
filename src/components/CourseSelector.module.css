@@ -1,0 +1,54 @@
+.container {
+  background: rgba(58, 125, 92, 0.4);
+  border: 2px solid #7fc97a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #a8e6a1;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a4d2e;
+  background-color: #a8e6a1;
+  border: 2px solid #7fc97a;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select:hover {
+  background-color: #7fc97a;
+  border-color: #6ab566;
+}
+
+.select:focus {
+  outline: 2px solid #a8e6a1;
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .select {
+    font-size: 0.9rem;
+    padding: 0.625rem 0.875rem;
+  }
+}
