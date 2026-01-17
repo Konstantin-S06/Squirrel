@@ -1,0 +1,48 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 2.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1.5rem;
+    gap: 2rem;
+  }
+
+  .actions {
+    max-width: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+
+  .actions {
+    max-width: 200px;
+  }
+}
