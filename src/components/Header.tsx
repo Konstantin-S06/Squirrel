@@ -1,11 +1,11 @@
 import React from 'react';
-import LoginButton from './LoginButton';
+import AuthButton from './AuthButton';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
   return (
     <header className={styles.header}>
-      <LoginButton />
+      <AuthButton />
     </header>
   );
 };
