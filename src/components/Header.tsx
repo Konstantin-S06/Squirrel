@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/firebase';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
@@ -9,12 +10,40 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      
+      if (currentUser) {
+        await createUserIfNotExists(currentUser);
+      }
     });
 
     return () => unsubscribe();
   }, []);
+
+  const createUserIfNotExists = async (user: User) => {
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          name: user.displayName || 'Anonymous',
+          level: 1,
+          xp: 0,
+          acorns: 50,
+          friends: [],
+          avatar: user.photoURL || '',
+          canvasAPIKey: '',
+          shieldEndTime: null,
+          lastBattleTime: null,
+        });
+        console.log('User document created');
+      }
+    } catch (error) {
+      console.error('Error creating user document:', error);
+    }
+  };
 
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
