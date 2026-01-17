@@ -6,6 +6,7 @@ import BattlePage from './pages/BattlePage';
 import FriendsPage from './pages/FriendsPage';
 import EditAvatarPage from './pages/EditAvatarPage';
 import AboutPage from './pages/AboutPage';
+import CourseQuestsPage from './pages/CourseQuestsPage';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/friends" element={<FriendsPage />} />
         <Route path="/edit-avatar" element={<EditAvatarPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/quests" element={<CourseQuestsPage />} />
       </Routes>
     </BrowserRouter>
   );
