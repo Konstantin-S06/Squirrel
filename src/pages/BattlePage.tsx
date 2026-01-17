@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import styles from './BattlePage.module.css';
 
 const BattlePage: React.FC = () => {
@@ -71,43 +72,46 @@ const BattlePage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {/* Back to Dashboard Button - Top Left */}
-      <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
-        ← Back to Dashboard
-      </button>
-
-      {/* Active Shield Timer - Top Right */}
-      <div className={styles.shieldTimer}>
-        <div className={styles.timerLabel}>Active Shield</div>
-        <div className={styles.timerValue}>
-          {shieldTime > 0 ? formatTime(shieldTime) : '00:00:00'}
-        </div>
-      </div>
-
-      {/* Battle Random Button - Left Side */}
-      <div className={styles.battleButtonContainer}>
-        <button 
-          className={styles.battleRandomButton}
-          onClick={handleBattleRandom}
-          disabled={resetTime > 0}
-        >
-          Battle Random
+      <Header />
+      <div className={styles.contentWrapper}>
+        {/* Back to Dashboard Button - Top Left */}
+        <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
+          ← Back to Dashboard
         </button>
-      </div>
 
-      {/* Battle Reset Timer - Bottom Left */}
-      <div className={styles.resetTimer}>
-        <div className={styles.timerLabel}>Battle Reset</div>
-        <div className={styles.timerValue}>
-          {resetTime > 0 ? formatTime(resetTime) : 'Ready'}
+        {/* Active Shield Timer - Top Right */}
+        <div className={styles.shieldTimer}>
+          <div className={styles.timerLabel}>Active Shield</div>
+          <div className={styles.timerValue}>
+            {shieldTime > 0 ? formatTime(shieldTime) : '00:00:00'}
+          </div>
         </div>
-      </div>
 
-      {/* Squirrel with Toy Sword - Bottom Right */}
-      <div className={styles.squirrelContainer}>
-        <div className={styles.squirrelWrapper}>
-          <div className={styles.squirrel}>🐿️</div>
-          <div className={styles.sword}>⚔️</div>
+        {/* Battle Random Button - Left Side */}
+        <div className={styles.battleButtonContainer}>
+          <button 
+            className={styles.battleRandomButton}
+            onClick={handleBattleRandom}
+            disabled={resetTime > 0}
+          >
+            Battle Random
+          </button>
+        </div>
+
+        {/* Battle Reset Timer - Bottom Left */}
+        <div className={styles.resetTimer}>
+          <div className={styles.timerLabel}>Battle Reset</div>
+          <div className={styles.timerValue}>
+            {resetTime > 0 ? formatTime(resetTime) : 'Ready'}
+          </div>
+        </div>
+
+        {/* Squirrel with Toy Sword - Bottom Right */}
+        <div className={styles.squirrelContainer}>
+          <div className={styles.squirrelWrapper}>
+            <div className={styles.squirrel}>🐿️</div>
+            <div className={styles.sword}>⚔️</div>
+          </div>
         </div>
       </div>
     </div>
