@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
 import styles from './CanvasSetupPage.module.css';
 
 const CanvasSetupPage: React.FC = () => {
+    const navigate = useNavigate();
     const [apiKey, setApiKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -27,6 +29,7 @@ const CanvasSetupPage: React.FC = () => {
                 updatedAt: new Date()
             }, { merge: true });
 
+            navigate('/dashboard');
             setSuccess(true);
             setApiKey('');
         } catch (err) {
