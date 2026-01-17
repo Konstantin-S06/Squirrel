@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import HeroCircle from '../components/HeroCircle';
 import styles from './LandingPage.module.css';
+import CanvasSetupButton from "../components/CanvasSetupButton";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const LandingPage: React.FC = () => {
       <main className={styles.main}>
         <h1 className={styles.title}>Squirrel</h1>
         <HeroCircle />
+        <CanvasSetupButton />
       </main>
     </div>
   );
