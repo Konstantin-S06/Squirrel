@@ -10,6 +10,7 @@ import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
 import AcornCounter from '../components/AcornCounter';
 import ActivityJournal from '../components/ActivityJournal';
+import Timetable from '../components/Timetable';
 import Header from '../components/Header';
 import styles from './DashboardPage.module.css';
 
@@ -121,6 +122,7 @@ const DashboardPage: React.FC = () => {
           <button onClick={handleCourses} className={styles.coursesButton}>
             📚 Courses
           </button>
+          <Timetable />
         </div>
 
         {/* Top Right Section: Acorn Counter & Journal */}
