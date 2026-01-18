@@ -34,7 +34,7 @@ const Header: React.FC = () => {
           acorns: 50,
           friends: [],
           avatar: user.photoURL || '',
-          canvasAPIKey: '',
+          canvasApiKey: '',
           shieldEndTime: null,
           lastBattleTime: null,
         });
