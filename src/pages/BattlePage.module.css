@@ -6,44 +6,58 @@
   overflow: hidden;
 }
 
-/* Back to Dashboard Button - Top Left */
 .backButton {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   background: rgba(255, 255, 255, 0.95);
-  color: #667eea;
+  color: #2d5f3f;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 10;
 }
 
 .backButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.backButton:active {
-  transform: translateY(0);
+.title {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: 700;
+  margin: 0;
 }
 
-/* Active Shield Timer - Top Right (below header) */
-.shieldTimer {
-  position: absolute;
-  top: 100px;
-  right: 20px;
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 2rem 2rem 2rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.section {
   background: rgba(255, 255, 255, 0.95);
-  padding: 15px 25px;
   border-radius: 12px;
+  padding: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: #2d5f3f;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+/* Shield Timer */
+.shieldTimer {
   text-align: center;
-  min-width: 150px;
+  padding: 1rem;
 }
 
 .timerLabel {
@@ -56,166 +70,211 @@
 }
 
 .timerValue {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: #667eea;
+  color: #2d5f3f;
   font-family: 'Courier New', monospace;
 }
 
-/* Battle Random Button - Left Side */
-.battleButtonContainer {
-  position: absolute;
-  left: 50px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: flex-start;
-}
-
+/* Battle Button */
 .battleRandomButton {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #7fc97a 0%, #4caf50 100%);
   color: white;
   border: none;
-  padding: 25px 50px;
-  font-size: 1.5rem;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.25rem;
   font-weight: 700;
-  border-radius: 15px;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
-  transition: all 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .battleRandomButton:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(127, 201, 122, 0.4);
 }
 
 .battleRandomButton:active:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(0);
 }
 
 .battleRandomButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background: linear-gradient(135deg, #ccc 0%, #999 100%);
 }
 
-/* Battle Reset Timer - Bottom Left */
-.resetTimer {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 15px 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+/* Battle Log */
+.battleLogLoading,
+.battleLogEmpty {
   text-align: center;
-  min-width: 150px;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
 }
 
-/* Squirrel with Toy Sword - Bottom Right */
-.squirrelContainer {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+.battleLogList {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-.squirrelWrapper {
-  position: relative;
+.battleLogEntry {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid #7fc97a;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.battleLogEntry:hover {
+  background: #e9ecef;
+  transform: translateX(5px);
+}
+
+.battleLogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.battleLogOpponent {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 0.75rem;
+  flex: 1;
 }
 
-.squirrel {
-  font-size: 8rem;
-  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-  animation: bounce 2s ease-in-out infinite;
-  position: relative;
-  z-index: 2;
+.battleLogAvatar,
+.battleLogAvatarEmoji {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e9ecef;
 }
 
-.sword {
-  font-size: 4rem;
-  animation: swing 1.5s ease-in-out infinite;
-  transform-origin: top center;
-  margin-left: -40px;
-  margin-top: -30px;
-  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
-  position: relative;
-  z-index: 1;
+.battleLogOpponentName {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
 }
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.battleLogResult {
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-@keyframes swing {
-  0%, 100% {
-    transform: rotate(-5deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
+.battleLogResult.win {
+  color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.battleLogResult.loss {
+  color: #d84a4a;
+  background: rgba(216, 74, 74, 0.1);
+}
+
+.battleLogDetails {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.battleLogRole {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.battleLogXP {
+  font-size: 0.85rem;
+  color: #2d5f3f;
+  font-weight: 600;
+}
+
+.battleLogAcorns {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.battleLogAcorns.acornsGain {
+  color: #4caf50;
+}
+
+.battleLogAcorns.acornsLoss {
+  color: #d84a4a;
+}
+
+.battleLogTimestamp {
+  font-size: 0.8rem;
+  color: #999;
+  font-style: italic;
 }
 
 /* Error Message */
 .errorMessage {
-  background: rgba(220, 53, 69, 0.95);
-  color: white;
-  padding: 12px 20px;
+  background: rgba(216, 74, 74, 0.1);
+  color: #d84a4a;
+  padding: 1rem;
   border-radius: 8px;
+  border: 1px solid #d84a4a;
   font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-  animation: slideIn 0.3s ease;
-  max-width: 300px;
+  text-align: center;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+/* Scrollbar styling */
+.battleLogList::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Responsive adjustments */
+.battleLogList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.battleLogList::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.battleLogList::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 @media (max-width: 768px) {
-  .battleButtonContainer {
-    left: 20px;
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .main {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .section {
+    padding: 1rem;
   }
 
   .battleRandomButton {
-    padding: 20px 40px;
-    font-size: 1.2rem;
-  }
-
-  .squirrel {
-    font-size: 6rem;
-  }
-
-  .sword {
-    font-size: 3rem;
-  }
-
-  .errorMessage {
-    max-width: 250px;
-    font-size: 0.85rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 1.1rem;
   }
 }
