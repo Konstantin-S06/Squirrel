@@ -265,11 +265,14 @@ const FriendsPage: React.FC = () => {
     <div className={styles.container}>
       <Header />
       <header className={styles.header}>
+        <h1 className={styles.title}>Friends</h1>
+      </header>
+
+      <div className={styles.backButtonContainer}>
         <button onClick={handleBack} className={styles.backButton}>
           ← Back to Dashboard
         </button>
-        <h1 className={styles.title}>Friends</h1>
-      </header>
+      </div>
 
       <main className={styles.main}>
         {/* Friend Code Section */}
@@ -360,9 +363,7 @@ const FriendsPage: React.FC = () => {
             ) : (
               friends.map((friend) => (
                 <div key={friend.id} className={styles.friendCard}>
-                  <div className={styles.friendAvatar}>
-                    <span className={styles.avatarEmoji}>🐿️</span>
-                  </div>
+                  <div className={styles.squirrelIcon}>🐿️</div>
                   <div className={styles.friendInfo}>
                     <div className={styles.friendName}>{friend.name}</div>
                     <div className={styles.friendLevel}>Level {friend.level}</div>

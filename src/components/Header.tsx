@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
 import { syncUserCourses } from '../utils/syncUserCourses';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [userName, setUserName] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,11 +18,30 @@ const Header: React.FC = () => {
       if (currentUser) {
         await createUserIfNotExists(currentUser);
         await syncUserCourses(currentUser.uid);
+      } else {
+        setUserName('');
       }
     });
 
     return () => unsubscribe();
   }, []);
+
+  // Separate effect for real-time name updates
+  useEffect(() => {
+    if (!user) return;
+
+    const userRef = doc(db, 'users', user.uid);
+    const unsubscribe = onSnapshot(userRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        setUserName(userData.name || 'Anonymous');
+      }
+    }, (error) => {
+      console.error('Error listening to user name:', error);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const createUserIfNotExists = async (user: User) => {
     try {
@@ -70,7 +90,7 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <div className={styles.left}>
-        {user && <span className={styles.username}>{user.displayName}</span>}
+        {user && userName && <span className={styles.username}>{userName}</span>}
       </div>
       <div className={styles.right}>
         {user ? (
