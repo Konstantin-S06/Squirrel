@@ -4,7 +4,7 @@ import { auth } from '../firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { fetchUserData } from '../services/battleService';
+import { fetchUserData, awardAssignmentReward } from '../services/battleService';
 import { useCanvasData } from '../hooks/useCanvasData';
 import { CanvasAssignment, CanvasCourse } from '../services/canvasConfig';
 import PlayerStats from '../components/PlayerStats';
@@ -138,6 +138,42 @@ const DashboardPage: React.FC = () => {
       const assignmentArrays = await Promise.all(assignmentPromises);
       const allAssignments = assignmentArrays.flat();
 
+      // Get previously rewarded assignments from Firestore
+      const completedAssignments: number[] = userData.completedAssignments || [];
+
+      // Check for newly completed assignments and award rewards
+      for (const assignment of allAssignments) {
+        // Check if assignment is complete
+        let isComplete = false;
+        if (assignment.submission) {
+          const submission = assignment.submission;
+          if (submission.submitted_at || 
+              submission.workflow_state === 'submitted' || 
+              submission.workflow_state === 'graded') {
+            isComplete = true;
+          }
+        }
+
+        // Award reward if completed and not already rewarded
+        if (isComplete && !completedAssignments.includes(assignment.id)) {
+          try {
+            await awardAssignmentReward(uid, assignment.id);
+            // Reload user data to update acorns and XP
+            const updatedUserData = await fetchUserData(uid);
+            if (updatedUserData) {
+              setAcorns(updatedUserData.acorns);
+              setLevel(updatedUserData.level);
+              const baseXP = (updatedUserData.level - 1) * 100;
+              const xpInCurrentLevel = updatedUserData.xp - baseXP;
+              setCurrentXP(xpInCurrentLevel);
+            }
+          } catch (error) {
+            // If already rewarded or error, continue
+            console.warn(`Assignment ${assignment.id} reward already given or error:`, error);
+          }
+        }
+      }
+
       // Filter to only incomplete assignments
       const incompleteAssignments = allAssignments.filter(assignment => {
         // Check submission status
@@ -153,8 +189,22 @@ const DashboardPage: React.FC = () => {
         return true;
       });
 
+      // Filter out past-due assignments
+      const now = new Date();
+      const upcomingIncompleteAssignments = incompleteAssignments.filter(assignment => {
+        if (!assignment.due_at) {
+          return true;
+        }
+        try {
+          const dueDate = new Date(assignment.due_at);
+          return dueDate >= now;
+        } catch (error) {
+          return true;
+        }
+      });
+
       // Convert to Activity format and sort by due date
-      const assignmentActivities: Activity[] = incompleteAssignments
+      const assignmentActivities: Activity[] = upcomingIncompleteAssignments
         .map(assignment => {
           let dueDate = 'No deadline';
           let timestamp = new Date();

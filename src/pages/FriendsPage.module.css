@@ -42,26 +42,225 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 0 2rem 2rem 2rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-.friendsList {
+.section {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: #2d5f3f;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+.generateButton {
+  background: linear-gradient(135deg, #7fc97a 0%, #4caf50 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.generateButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(127, 201, 122, 0.4);
+}
+
+.generateButton:active {
+  transform: translateY(0);
+}
+
+.friendCodeDisplay {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.friendCodeInput {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: 2px solid #7fc97a;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: monospace;
+  background: #f8f9fa;
+  color: #2d5f3f;
+  font-weight: 600;
+  cursor: text;
+}
+
+.friendCodeInput:focus {
+  outline: none;
+  border-color: #4caf50;
+  background: white;
+}
+
+.copyButton {
+  background: #2d5f3f;
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.copyButton:hover {
+  background: #1a4d2e;
+  transform: translateY(-2px);
+}
+
+.copyButton:active {
+  transform: translateY(0);
+}
+
+.sendRequestContainer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.sendButton {
+  background: linear-gradient(135deg, #7fc97a 0%, #4caf50 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.sendButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(127, 201, 122, 0.4);
+}
+
+.sendButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sendButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.requestsList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  min-height: 300px;
-  max-height: 600px;
+  gap: 0.75rem;
+}
+
+.requestCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.requestCard:hover {
+  background: #e9ecef;
+}
+
+.requestInfo {
+  flex: 1;
+}
+
+.requestName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.requestLevel {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.requestActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.acceptButton {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.acceptButton:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.acceptButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rejectButton {
+  background: #d84a4a;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.rejectButton:hover:not(:disabled) {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+.rejectButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.friendsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 400px;
   overflow-y: auto;
 }
 
 .emptyState {
   text-align: center;
-  padding: 3rem;
+  padding: 2rem;
   color: #666;
   font-size: 1.1rem;
 }
@@ -94,24 +293,6 @@
   font-size: 2rem;
 }
 
-.statusIndicator {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid white;
-}
-
-.statusIndicator.online {
-  background: #4caf50;
-}
-
-.statusIndicator.offline {
-  background: #999;
-}
-
 .friendInfo {
   flex: 1;
 }
@@ -128,51 +309,46 @@
   color: #666;
 }
 
-.friendStatus {
-  font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
+.errorMessage {
+  background: rgba(216, 74, 74, 0.1);
+  color: #d84a4a;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #d84a4a;
+  font-weight: 600;
+  text-align: center;
 }
 
-.addFriendButton {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  align-self: center;
-  min-width: 200px;
-}
-
-.addFriendButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.addFriendButton:active {
-  transform: translateY(0);
+.successMessage {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #4caf50;
+  font-weight: 600;
+  text-align: center;
 }
 
 /* Scrollbar styling */
-.friendsList::-webkit-scrollbar {
+.friendsList::-webkit-scrollbar,
+.requestsList::-webkit-scrollbar {
   width: 8px;
 }
 
-.friendsList::-webkit-scrollbar-track {
+.friendsList::-webkit-scrollbar-track,
+.requestsList::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
 
-.friendsList::-webkit-scrollbar-thumb {
+.friendsList::-webkit-scrollbar-thumb,
+.requestsList::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
 }
 
-.friendsList::-webkit-scrollbar-thumb:hover {
+.friendsList::-webkit-scrollbar-thumb:hover,
+.requestsList::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
@@ -185,7 +361,37 @@
     font-size: 2rem;
   }
 
-  .friendsList {
+  .main {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .section {
     padding: 1rem;
+  }
+
+  .friendCodeDisplay,
+  .sendRequestContainer {
+    flex-direction: column;
+  }
+
+  .copyButton,
+  .sendButton {
+    width: 100%;
+  }
+
+  .requestCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .requestActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .acceptButton,
+  .rejectButton {
+    flex: 1;
   }
 }

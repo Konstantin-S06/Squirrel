@@ -86,6 +86,19 @@
   color: #ffffff;
 }
 
+.reward {
+  color: #ffd93d;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.claimed {
+  color: #4caf50;
+  font-weight: 600;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 .loading, .error, .empty {
   padding: 2rem;
   text-align: center;
