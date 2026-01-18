@@ -184,6 +184,7 @@ const DashboardPage: React.FC = () => {
           <button onClick={handleCourses} className={styles.coursesButton}>
             📚 Courses
           </button>
+          <Timetable />
         </div>
 
         {/* Top Right Section: Acorn Counter & Upcoming Assignments */}
