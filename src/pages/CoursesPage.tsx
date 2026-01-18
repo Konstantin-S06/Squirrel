@@ -44,6 +44,9 @@ const CoursesPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <Header />
+      <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
+        ← Back to Dashboard
+      </button>
       {loading ? (
         <div className={styles.loading}>Loading courses...</div>
       ) : error || !isConnected ? (
