@@ -2,7 +2,7 @@
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: url('../assets/backgrounds/forest.gif') center/cover no-repeat;
   overflow: hidden;
 }
 

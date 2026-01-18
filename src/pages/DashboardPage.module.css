@@ -31,22 +31,44 @@
 }
 
 .friendsButton {
-  font-family: 'VT323', monospace;
-  background: rgba(255, 255, 255, 0.95);
-  color: #2d5f3f;
+  font-family: 'Press Start 2P', cursive;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0;
   font-weight: 400;
   font-size: 1.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s, background 0.2s;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .friendsButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .friendsButton:active {
@@ -54,22 +76,44 @@
 }
 
 .coursesButton {
-  font-family: 'VT323', monospace;
-  background: rgba(255, 255, 255, 0.95);
-  color: #2d5f3f;
+  font-family: 'Press Start 2P', cursive;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0;
   font-weight: 400;
   font-size: 1.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s, background 0.2s;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .coursesButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .coursesButton:active {
@@ -107,6 +151,52 @@
   max-width: 280px;
 }
 
+/* Battle Button - Bottom Right */
+.battleButtonContainer {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  z-index: 10;
+}
+
+.battleButtonContainer button {
+  width: 280px;
+  height: 160px;
+  font-size: 2.5rem;
+  padding: 1rem;
+  background: rgba(74, 157, 111, 0.85);
+  border: none;
+  border-radius: 0;
+  backdrop-filter: blur(10px);
+  font-family: 'Press Start 2P', cursive;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
+}
+
+.battleButtonContainer button:hover {
+  background: rgba(74, 157, 111, 0.95);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+}
+
 @media (max-width: 768px) {
   .main {
     padding: 1.5rem;
@@ -115,6 +205,17 @@
 
   .actions {
     max-width: 240px;
+  }
+
+  .battleButtonContainer {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .battleButtonContainer button {
+    width: 240px;
+    height: 130px;
+    font-size: 2rem;
   }
 
   .topRightSection {
@@ -144,6 +245,17 @@
 
   .actions {
     max-width: 200px;
+  }
+
+  .battleButtonContainer {
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .battleButtonContainer button {
+    width: 200px;
+    height: 110px;
+    font-size: 1.75rem;
   }
 
   .topRightSection {
