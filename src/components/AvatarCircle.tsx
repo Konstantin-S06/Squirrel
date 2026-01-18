@@ -49,7 +49,7 @@ const AvatarCircle: React.FC = () => {
       {loading ? (
         <div className={styles.loading}>Loading...</div>
       ) : (
-        <PixelAvatar parts={avatarParts} size={200} />
+        <PixelAvatar parts={avatarParts} size={400} />
       )}
     </div>
   );

@@ -8,8 +8,7 @@ interface AcornCounterProps {
 const AcornCounter: React.FC<AcornCounterProps> = ({ acorns }) => {
   return (
     <div className={styles.container}>
-      <span className={styles.icon}>🌰</span>
-      <span className={styles.label}>acorns</span>
+      <span className={styles.icon}>🌰:</span>
       <span className={styles.value}>{acorns}</span>
     </div>
   );
