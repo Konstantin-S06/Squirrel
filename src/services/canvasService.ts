@@ -1,8 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
 
-// CORS Proxy for hackathon (quick & dirty solution)
-const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+// UofT Canvas has CORS enabled - no proxy needed!
 const CANVAS_DOMAIN = 'https://q.utoronto.ca';
 
 export interface CanvasCourse {
@@ -49,7 +48,8 @@ async function getCanvasApiKey(): Promise<string | null> {
 }
 
 /**
- * Makes an authenticated request to Canvas API using CORS proxy
+ * Makes an authenticated request to Canvas API
+ * UofT Canvas has CORS enabled, so no proxy needed!
  */
 async function canvasRequest(endpoint: string): Promise<any> {
   const apiKey = await getCanvasApiKey();
@@ -58,8 +58,8 @@ async function canvasRequest(endpoint: string): Promise<any> {
   }
 
   try {
-    const url = `${CORS_PROXY}${CANVAS_DOMAIN}${endpoint}`;
-    console.log('Making Canvas API request to:', url.replace(apiKey, '***'));
+    const url = `${CANVAS_DOMAIN}${endpoint}`;
+    console.log('Making Canvas API request to:', endpoint);
 
     const response = await fetch(url, {
       method: 'GET',
@@ -100,7 +100,7 @@ export async function isCanvasConnected(): Promise<boolean> {
  */
 export async function testCanvasConnection(apiKey: string): Promise<boolean> {
   try {
-    const url = `${CORS_PROXY}${CANVAS_DOMAIN}/api/v1/users/self`;
+    const url = `${CANVAS_DOMAIN}/api/v1/users/self`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -118,7 +118,6 @@ export async function testCanvasConnection(apiKey: string): Promise<boolean> {
 
 /**
  * Fetches all active courses for the current user from Canvas
- * Uses CORS proxy to avoid CORS issues
  */
 export async function fetchCanvasCourses(): Promise<CanvasCourse[]> {
   try {

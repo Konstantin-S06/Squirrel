@@ -1,40 +1,19 @@
-# Canvas API Integration - Quick Setup Guide
+# Canvas API Integration - UofT Canvas
 
-## ⚠️ IMPORTANT: CORS Proxy Setup
+## ✅ Good News: No CORS Proxy Needed!
 
-This implementation uses **https://cors-anywhere.herokuapp.com/** as a CORS proxy for the hackathon. This is a **demo-only** solution!
-
-### To Use cors-anywhere:
-
-1. **Request temporary access** (required for demo):
-   - Go to: https://cors-anywhere.herokuapp.com/corsdemo
-   - Click "Request temporary access to the demo server"
-   - Access lasts for a limited time
-
-2. **Alternative: Run your own CORS proxy locally** (recommended):
-   ```bash
-   # Clone cors-anywhere
-   git clone https://github.com/Rob--W/cors-anywhere.git
-   cd cors-anywhere
-   npm install
-   node server.js
-   ```
-   Then update [canvasService.ts](src/services/canvasService.ts:5):
-   ```typescript
-   const CORS_PROXY = 'http://localhost:8080/';
-   ```
+UofT Canvas (`q.utoronto.ca`) has CORS enabled, so you can call the API directly from the browser without any proxy!
 
 ## How It Works
 
 ### 1. Canvas Service ([src/services/canvasService.ts](src/services/canvasService.ts))
 
-All Canvas API requests go through the CORS proxy:
+Direct API calls to Canvas:
 ```typescript
-const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 const CANVAS_DOMAIN = 'https://q.utoronto.ca';
 
 // Example request
-const url = `${CORS_PROXY}${CANVAS_DOMAIN}/api/v1/courses`;
+const url = `${CANVAS_DOMAIN}/api/v1/courses`;
 ```
 
 ### 2. Available Functions
@@ -111,27 +90,30 @@ const stats = async (courseId) => {
 
 ## Testing
 
-### Quick Test
-
-Open browser console and run:
+### Quick Test in Browser Console
 
 ```javascript
 // Test Canvas connection
-import { testCanvasConnection } from './services/canvasService';
+const testAPI = async (apiKey) => {
+  const response = await fetch('https://q.utoronto.ca/api/v1/users/self', {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  });
+  const data = await response.json();
+  console.log('✅ Works!', data);
+};
 
-const isValid = await testCanvasConnection('YOUR_API_KEY_HERE');
-console.log('API Key Valid:', isValid);
+testAPI('YOUR_API_KEY_HERE');
 ```
 
-### Manual Test with curl
+### Get Your Canvas API Key
 
-```bash
-# Test via CORS proxy
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  "https://cors-anywhere.herokuapp.com/https://q.utoronto.ca/api/v1/courses?enrollment_state=active"
-```
+1. Go to: https://q.utoronto.ca/profile/settings
+2. Scroll to "Approved Integrations"
+3. Click "+ New Access Token"
+4. Purpose: "Squirrel Hackathon"
+5. Generate and copy token
 
-## Data Structure
+## Data Structures
 
 ### CanvasCourse
 ```typescript
@@ -180,13 +162,12 @@ users/{uid}: {
   canvasApiKey: string,  // ← User's Canvas API token
   level: number,
   xp: number,
+  acorns: number,
   // ... other user data
 }
 ```
 
-### How to Add API Key for User
-
-You'll need a UI component (like [CanvasSetupPage](src/pages/CanvasSetupPage.tsx)) to let users input their API key:
+### How to Save API Key
 
 ```typescript
 import { doc, updateDoc } from 'firebase/firestore';
@@ -202,46 +183,45 @@ const saveCanvasApiKey = async (apiKey: string) => {
 };
 ```
 
-## For Production (Post-Hackathon)
+## Common API Endpoints
 
-Replace CORS proxy with one of these:
+```javascript
+// User profile
+GET /api/v1/users/self
 
-1. **Backend Proxy Server** (your teammate was building this)
-   - More secure
-   - Server-side API key storage
-   - Rate limiting
+// Active courses
+GET /api/v1/courses?enrollment_state=active
 
-2. **Firebase Cloud Functions**
-   - Serverless
-   - Integrates with existing Firebase
-   - Auto-scaling
+// Course assignments
+GET /api/v1/courses/{courseId}/assignments
 
-3. **Self-hosted cors-anywhere**
-   - Simple to deploy
-   - Full control
+// User submissions for a course
+GET /api/v1/courses/{courseId}/students/submissions?student_ids[]={userId}
+```
 
 ## Troubleshooting
-
-### Error: "Failed to fetch"
-- Make sure you requested access at https://cors-anywhere.herokuapp.com/corsdemo
-- Or run your own CORS proxy locally
 
 ### Error: "Invalid Canvas API key"
 - Verify API key in Canvas settings
 - Check Firestore has `canvasApiKey` field for user
+- Make sure token hasn't expired
 
 ### Error: "No courses found"
 - Make sure user is enrolled in active courses
-- Check Canvas API permissions
+- Check enrollment_state parameter
 
-## Demo Video Flow
+### Error: "Canvas API key not found"
+- User needs to save their Canvas API token first
+- Navigate them to Canvas Setup page
+
+## Demo Flow
 
 1. User signs in with Google → Firestore creates user doc
 2. User navigates to Canvas Setup page
 3. User pastes Canvas API token → Saves to Firestore
-4. App fetches courses via CORS proxy
+4. App fetches courses directly from Canvas
 5. User can see courses, battle with friends, view Common Ground stats
 
 ---
 
-**For questions, check the main [BATTLE_SYSTEM_README.md](BATTLE_SYSTEM_README.md)**
+**For battle system details, check [BATTLE_SYSTEM_README.md](BATTLE_SYSTEM_README.md)**
