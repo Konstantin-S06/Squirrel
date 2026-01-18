@@ -281,112 +281,113 @@ const FriendsPage: React.FC = () => {
       </div>
 
       <main className={styles.main}>
-        {/* Friend Code Section */}
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Your Friend Code</h2>
-          {!showFriendCode ? (
-            <button onClick={handleGenerateFriendCode} className={styles.generateButton}>
-              Generate Friend Code
-            </button>
-          ) : (
-            <div className={styles.friendCodeDisplay}>
-              <input
-                type="text"
-                value={friendCode}
-                readOnly
-                className={styles.friendCodeInput}
-                onClick={(e) => (e.target as HTMLInputElement).select()}
-              />
-              <button onClick={handleCopyFriendCode} className={styles.copyButton}>
-                Copy
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Send Friend Request Section */}
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Send Friend Request</h2>
-          <div className={styles.sendRequestContainer}>
-            <input
-              type="text"
-              value={inputFriendCode}
-              onChange={(e) => setInputFriendCode(e.target.value)}
-              placeholder="Enter friend code"
-              className={styles.friendCodeInput}
-            />
-            <button
-              onClick={handleSendFriendRequest}
-              disabled={loading}
-              className={styles.sendButton}
-            >
-              {loading ? 'Sending...' : 'Send Friend Request'}
-            </button>
-          </div>
-        </div>
-
-        {/* Incoming Requests Section */}
-        {incomingRequests.length > 0 && (
+        {/* Left Column: Friend Code and Send Request */}
+        <div className={styles.leftColumn}>
+          {/* Friend Code Section */}
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Incoming Friend Requests</h2>
-            <div className={styles.requestsList}>
-              {incomingRequests.map((request) => (
-                <div key={request.uid} className={styles.requestCard}>
-                  <div className={styles.requestInfo}>
-                    <div className={styles.requestName}>{request.name}</div>
-                    <div className={styles.requestLevel}>Level {request.level}</div>
-                  </div>
-                  <div className={styles.requestActions}>
-                    <button
-                      onClick={() => handleAcceptRequest(request.uid)}
-                      disabled={loading}
-                      className={styles.acceptButton}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => handleRejectRequest(request.uid)}
-                      disabled={loading}
-                      className={styles.rejectButton}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Friends List Section */}
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Friends</h2>
-          <div className={styles.friendsList}>
-            {friends.length === 0 ? (
-              <div className={styles.emptyState}>
-                <p>No friends yet. Add some friends to get started!</p>
-              </div>
+            <h2 className={styles.sectionTitle}>Your Friend Code</h2>
+            {!showFriendCode ? (
+              <button onClick={handleGenerateFriendCode} className={styles.generateButton}>
+                Generate Friend Code
+              </button>
             ) : (
-              friends.map((friend, index) => (
-                <div key={friend.id} className={styles.friendCard}>
-                  <div className={styles.friendRank}>#{index + 1}</div>
-                  <div className={styles.squirrelIcon}>🐿️</div>
-                  <div className={styles.friendInfo}>
-                    <div className={styles.friendName}>{friend.name}</div>
-                    <div className={styles.friendStats}>
-                      <div className={styles.friendLevel}>Level {friend.level}</div>
-                      <div className={styles.friendXP}>{friend.xp} XP</div>
-                    </div>
-                  </div>
-                </div>
-              ))
+              <div className={styles.friendCodeDisplay}>
+                <input
+                  type="text"
+                  value={friendCode}
+                  readOnly
+                  className={styles.friendCodeInput}
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
+                />
+                <button onClick={handleCopyFriendCode} className={styles.copyButton}>
+                  Copy
+                </button>
+              </div>
             )}
           </div>
+
+          {/* Send Friend Request Section */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Send Friend Request</h2>
+            <div className={styles.sendRequestContainer}>
+              <input
+                type="text"
+                value={inputFriendCode}
+                onChange={(e) => setInputFriendCode(e.target.value)}
+                placeholder="Enter friend code"
+                className={styles.friendCodeInput}
+              />
+              <button
+                onClick={handleSendFriendRequest}
+                disabled={loading}
+                className={styles.sendButton}
+              >
+                {loading ? 'Sending...' : 'Send Friend Request'}
+              </button>
+            </div>
+          </div>
+
+          {/* Incoming Requests Section */}
+          {incomingRequests.length > 0 && (
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Incoming Friend Requests</h2>
+              <div className={styles.requestsList}>
+                {incomingRequests.map((request) => (
+                  <div key={request.uid} className={styles.requestCard}>
+                    <div className={styles.requestInfo}>
+                      <div className={styles.requestName}>{request.name}</div>
+                      <div className={styles.requestLevel}>Level {request.level}</div>
+                    </div>
+                    <div className={styles.requestActions}>
+                      <button
+                        onClick={() => handleAcceptRequest(request.uid)}
+                        disabled={loading}
+                        className={styles.acceptButton}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => handleRejectRequest(request.uid)}
+                        disabled={loading}
+                        className={styles.rejectButton}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Messages */}
+          {error && <div className={styles.errorMessage}>{error}</div>}
+          {success && <div className={styles.successMessage}>{success}</div>}
         </div>
 
-        {/* Messages */}
-        {error && <div className={styles.errorMessage}>{error}</div>}
-        {success && <div className={styles.successMessage}>{success}</div>}
+        {/* Right Column: Friends List */}
+        <div className={styles.rightColumn}>
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Friends</h2>
+            <div className={styles.friendsList}>
+              {friends.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No friends yet. Add some friends to get started!</p>
+                </div>
+              ) : (
+                friends.map((friend) => (
+                  <div key={friend.id} className={styles.friendCard}>
+                    <div className={styles.squirrelIcon}>🐿️</div>
+                    <div className={styles.friendInfo}>
+                      <div className={styles.friendName}>{friend.name}</div>
+                      <div className={styles.friendLevel}>Level {friend.level}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

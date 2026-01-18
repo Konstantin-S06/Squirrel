@@ -1,64 +1,72 @@
 .container {
+  width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+  background: url('../assets/backgrounds/forest.gif') center/cover no-repeat;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  position: relative;
 }
 
 .content {
-  max-width: 1200px;
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
+  padding: 2rem;
+  margin-top: 60px;
 }
 
 .titleSection {
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .title {
+  font-family: 'Press Start 2P', cursive;
   text-align: center;
-  color: white;
-  font-size: 2.5rem;
+  color: #a8e6a1;
+  font-size: 2rem;
+  font-weight: 400;
   margin-bottom: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
   display: inline-block;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .title:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(74, 157, 111, 0.3);
   transform: scale(1.02);
 }
 
 .nameInput {
+  font-family: 'VT323', monospace;
   text-align: center;
   color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 2rem;
+  font-weight: 400;
+  background: #1a4d2e;
+  border: none;
   border-radius: 8px;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   outline: none;
   transition: all 0.2s;
   max-width: 500px;
 }
 
 .nameInput:focus {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #4CAF50;
-  box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+  background: #2d5f3f;
 }
 
 .acorns {
+  font-family: 'VT323', monospace;
   text-align: center;
   color: #FFD700;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 400;
   margin-bottom: 2rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .preview {
@@ -73,30 +81,44 @@
 
 .saveButton,
 .backButton {
-  background: #4CAF50;
-  color: white;
+  font-family: 'VT323', monospace;
+  background: #1a4d2e;
+  color: #a8e6a1;
   border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 0.875rem 1.5rem;
+  border-radius: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
   cursor: pointer;
   margin: 0.5rem;
-  transition: all 0.2s;
+  transition: background 0.2s;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .saveButton:hover,
 .backButton:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-}
-
-.backButton {
-  background: #666;
-}
-
-.backButton:hover {
-  background: #555;
+  background: #2d5f3f;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .categories {
@@ -108,37 +130,86 @@
 }
 
 .categoryButton {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-family: 'VT323', monospace;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
+  border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .categoryButton:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .categoryButton.active {
-  background: #4CAF50;
-  border-color: #4CAF50;
+  background: #1a4d2e;
+  color: #a8e6a1;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
   transform: scale(1.05);
 }
 
 .items {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  background: rgba(74, 157, 111, 0.6);
+  border-radius: 0;
   padding: 2rem;
   margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  border: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(255, 255, 255, 0.2),
+    4px 0 0 0 rgba(255, 255, 255, 0.2),
+    0 -4px 0 0 rgba(255, 255, 255, 0.2),
+    0 4px 0 0 rgba(255, 255, 255, 0.2);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .sectionTitle {
-  color: white;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-family: 'Press Start 2P', cursive;
+  color: #a8e6a1;
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .grid {
@@ -150,9 +221,9 @@
 
 .itemCard,
 .shopCard {
-  background: rgba(255, 255, 255, 0.1);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
+  background: rgba(45, 95, 63, 0.6);
+  border: 2px solid rgba(127, 201, 122, 0.5);
+  border-radius: 8px;
   padding: 1rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -160,18 +231,20 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  backdrop-filter: blur(10px);
 }
 
 .itemCard:hover,
 .shopCard:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
+  background: rgba(58, 125, 92, 0.7);
+  border-color: #7fc97a;
+  transform: translateY(-2px);
 }
 
 .itemCard.selected {
-  border-color: #4CAF50;
-  background: rgba(76, 175, 80, 0.2);
-  box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.3);
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.5);
 }
 
 .shopCard:disabled {
@@ -188,41 +261,49 @@
 }
 
 .itemName {
-  color: white;
-  font-size: 0.9rem;
-  font-weight: bold;
+  font-family: 'VT323', monospace;
+  color: #e8f5e9;
+  font-size: 1rem;
+  font-weight: 400;
   text-align: center;
 }
 
 .rarity {
-  font-size: 0.75rem;
+  font-family: 'VT323', monospace;
+  font-size: 0.875rem;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .cost {
+  font-family: 'VT323', monospace;
   color: #FFD700;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 1.125rem;
+  font-weight: 400;
 }
 
 .loading {
+  font-family: 'VT323', monospace;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #a8e6a1;
   font-size: 1.5rem;
-  background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+  background: url('../assets/backgrounds/forest.gif') center/cover no-repeat;
 }
 
 @media (max-width: 768px) {
-  .container {
+  .content {
     padding: 1rem;
   }
 
   .title {
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .nameInput {
+    font-size: 1.5rem;
   }
 
   .categories {
@@ -230,12 +311,20 @@
   }
 
   .categoryButton {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.625rem 1rem;
+    font-size: 1.125rem;
   }
 
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 0.75rem;
+  }
+
+  .items {
+    padding: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1rem;
   }
 }
