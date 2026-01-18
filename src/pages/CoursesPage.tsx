@@ -46,16 +46,6 @@ const CoursesPage: React.FC = () => {
       ) : error || !isConnected ? (
         <div className={styles.error}>
           <p>Canvas not connected. Please connect your Canvas account to see your courses.</p>
-      <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
-        ← Back to Dashboard
-      </button>
-      <div className={styles.layout}>
-        <div className={styles.leftColumn}>
-          <CourseSelector 
-            selectedCourse={selectedCourse} 
-            onCourseChange={setSelectedCourse} 
-          />
-          <Leaderboard courseName={selectedCourse} />
         </div>
       ) : (
         <div className={styles.layout}>
