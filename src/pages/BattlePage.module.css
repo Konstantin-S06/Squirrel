@@ -33,10 +33,10 @@
   transform: translateY(0);
 }
 
-/* Active Shield Timer - Top Right */
+/* Active Shield Timer - Top Right (below header) */
 .shieldTimer {
   position: absolute;
-  top: 20px;
+  top: 100px;
   right: 20px;
   background: rgba(255, 255, 255, 0.95);
   padding: 15px 25px;
