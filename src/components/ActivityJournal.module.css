@@ -67,10 +67,22 @@
   line-height: 1.4;
 }
 
+.activityCourse {
+  font-size: 0.8rem;
+  color: #2d5f3f;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
 .activityTime {
   font-size: 0.75rem;
   color: #666;
   font-style: italic;
+}
+
+.dueLabel {
+  color: #dc3545;
+  font-weight: 600;
 }
 
 /* Scrollbar styling */
