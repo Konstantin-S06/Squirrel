@@ -248,10 +248,14 @@ const DashboardPage: React.FC = () => {
           <PlayerStats level={level} currentXP={currentXP} maxXP={maxXP} />
           <AvatarCircle />
           <div className={styles.actions}>
-            <ActionButton label="Edit" onClick={handleEdit} variant="primary" />
-            <ActionButton label="Battle" onClick={handleBattle} variant="danger" />
+            <ActionButton label="Edit Avatar" onClick={handleEdit} variant="primary" />
           </div>
         </main>
+
+        {/* Battle Button - Bottom Right */}
+        <div className={styles.battleButtonContainer}>
+          <ActionButton label="Battle ⚔️" onClick={handleBattle} variant="danger" />
+        </div>
       </div>
     </div>
   );

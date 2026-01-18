@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+  background: url('../assets/backgrounds/forest.gif') center/cover no-repeat;
   display: flex;
   flex-direction: column;
   position: relative;

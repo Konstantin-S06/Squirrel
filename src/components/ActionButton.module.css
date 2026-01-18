@@ -5,17 +5,16 @@
   font-size: 1.75rem;
   font-weight: 400;
   border: none;
-  border-radius: 10px;
+  border-radius: 0;
   cursor: pointer;
+  backdrop-filter: blur(10px);
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .button:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button:focus {
@@ -24,21 +23,44 @@
 }
 
 .primary {
-  background-color: #4a9d6f;
-  color: #ffffff;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .primary:hover {
-  background-color: #3a7d5c;
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .danger {
-  background-color: #d84a4a;
-  color: #ffffff;
+  background: rgba(74, 157, 111, 0.85);
+  color: #a8e6a1;
+  border-color: rgba(127, 201, 122, 0.5);
 }
 
 .danger:hover {
-  background-color: #b83838;
+  background: rgba(74, 157, 111, 0.95);
 }
 
 @media (max-width: 768px) {

@@ -40,11 +40,11 @@ const ActivityJournal: React.FC<ActivityJournalProps> = ({ activities }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.icon}>📔</span>
-        <span className={styles.title}>Incomplete Assignments</span>
+        <span className={styles.title}>Upcoming</span>
       </div>
       <div className={styles.content}>
         {activities.length === 0 ? (
-          <div className={styles.empty}>No incomplete assignments</div>
+          <div className={styles.empty}>Nothing upcoming</div>
         ) : (
           <div className={styles.activities}>
             {activities.map((activity) => (
