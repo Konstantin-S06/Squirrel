@@ -23,7 +23,7 @@ const LandingPage: React.FC = () => {
     <div className={styles.container}>
       <Header />
       <main className={styles.main}>
-        <h1 className={styles.title}>Squirrl</h1>
+        <h1 className={styles.title}>squirrl</h1>
         <HeroCircle />
         <div className={styles.buttonContainer}>
           <CanvasSetupButton />
@@ -33,7 +33,7 @@ const LandingPage: React.FC = () => {
             </button>
           )}
           <button onClick={() => navigate('/about')} className={styles.aboutButton}>
-            About Squirrl
+            About squirrl
           </button>
         </div>
       </main>
