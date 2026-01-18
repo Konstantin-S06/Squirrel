@@ -4,6 +4,7 @@
   background: url('../assets/backgrounds/forest.gif') center/cover no-repeat;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .header {
@@ -14,6 +15,7 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
+  margin-top: 60px;
 }
 
 .backButtonContainer {
@@ -26,26 +28,52 @@
 }
 
 .backButton {
-  background: rgba(255, 255, 255, 0.95);
-  color: #2d5f3f;
+  font-family: 'VT323', monospace;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .backButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .title {
+  font-family: 'Press Start 2P', cursive;
   font-size: 2.5rem;
-  color: white;
-  font-weight: 700;
+  color: #a8e6a1;
+  font-weight: 400;
   margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .main {
@@ -60,17 +88,36 @@
 }
 
 .section {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background: rgba(74, 157, 111, 0.6);
+  border-radius: 0;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(255, 255, 255, 0.2),
+    4px 0 0 0 rgba(255, 255, 255, 0.2),
+    0 -4px 0 0 rgba(255, 255, 255, 0.2),
+    0 4px 0 0 rgba(255, 255, 255, 0.2);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .sectionTitle {
+  font-family: 'Press Start 2P', cursive;
   font-size: 1.5rem;
-  color: #2d5f3f;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
+  color: #a8e6a1;
+  font-weight: 400;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(127, 201, 122, 0.3);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 /* Shield Timer */
@@ -80,40 +127,65 @@
 }
 
 .timerLabel {
-  font-size: 0.9rem;
-  color: #666;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #7fc97a;
   margin-bottom: 5px;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .timerValue {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2d5f3f;
-  font-family: 'Courier New', monospace;
+  font-family: 'VT323', monospace;
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #a8e6a1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 /* Battle Button */
 .battleRandomButton {
-  background: linear-gradient(135deg, #7fc97a 0%, #4caf50 100%);
-  color: white;
+  font-family: 'VT323', monospace;
+  background: #1a4d2e;
+  color: #a8e6a1;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 0;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 400;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s;
   width: 100%;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .battleRandomButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(127, 201, 122, 0.4);
+  background: #2d5f3f;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .battleRandomButton:active:not(:disabled) {
@@ -128,10 +200,12 @@
 /* Battle Log */
 .battleLogLoading,
 .battleLogEmpty {
+  font-family: 'VT323', monospace;
   text-align: center;
   padding: 2rem;
-  color: #666;
-  font-size: 1.1rem;
+  color: #7fc97a;
+  font-size: 1.25rem;
+  font-style: italic;
 }
 
 .battleLogList {
@@ -143,16 +217,16 @@
 }
 
 .battleLogEntry {
-  background: #f8f9fa;
+  background: rgba(45, 95, 63, 0.6);
   border-radius: 8px;
   padding: 1rem;
-  border-left: 3px solid #7fc97a;
   transition: background 0.2s, transform 0.2s;
+  backdrop-filter: blur(10px);
 }
 
 .battleLogEntry:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
+  background: rgba(58, 125, 92, 0.7);
+  transform: translateX(4px);
 }
 
 .battleLogHeader {
@@ -179,18 +253,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e9ecef;
+  background: rgba(127, 201, 122, 0.2);
 }
 
 .battleLogOpponentName {
-  font-weight: 600;
-  color: #333;
-  font-size: 1rem;
+  font-family: 'VT323', monospace;
+  font-weight: 400;
+  color: #e8f5e9;
+  font-size: 1.125rem;
 }
 
 .battleLogResult {
-  font-weight: 700;
-  font-size: 0.85rem;
+  font-family: 'VT323', monospace;
+  font-weight: 400;
+  font-size: 1rem;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   text-transform: uppercase;
@@ -199,12 +275,12 @@
 
 .battleLogResult.win {
   color: #4caf50;
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(76, 175, 80, 0.2);
 }
 
 .battleLogResult.loss {
   color: #d84a4a;
-  background: rgba(216, 74, 74, 0.1);
+  background: rgba(216, 74, 74, 0.2);
 }
 
 .battleLogDetails {
@@ -215,24 +291,24 @@
 }
 
 .battleLogRole {
-  font-size: 0.85rem;
-  color: #666;
-  font-weight: 500;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #a8e6a1;
+  font-weight: 400;
 }
 
 .battleLogXP {
-  font-size: 0.85rem;
-  color: #2d5f3f;
-  font-weight: 600;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #7fc97a;
+  font-weight: 400;
 }
 
 .battleLogAcorns {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.battleLogAcorns.acornsGain {
-  color: #4caf50;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #7fc97a;
 }
 
 .battleLogAcorns.acornsLoss {
@@ -240,19 +316,22 @@
 }
 
 .battleLogTimestamp {
-  font-size: 0.8rem;
-  color: #999;
+  font-family: 'VT323', monospace;
+  font-size: 0.875rem;
+  color: #7fc97a;
   font-style: italic;
 }
 
 /* Error Message */
 .errorMessage {
+  font-family: 'VT323', monospace;
   background: rgba(216, 74, 74, 0.1);
   color: #d84a4a;
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #d84a4a;
-  font-weight: 600;
+  font-weight: 400;
+  font-size: 1.125rem;
   text-align: center;
 }
 
@@ -280,6 +359,10 @@
     padding: 1rem;
   }
 
+  .header {
+    padding: 1.5rem 1rem 1rem 1rem;
+  }
+
   .title {
     font-size: 2rem;
   }
@@ -289,11 +372,19 @@
   }
 
   .section {
-    padding: 1rem;
+    padding: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
   }
 
   .battleRandomButton {
     padding: 0.875rem 1.5rem;
-    font-size: 1.1rem;
+    font-size: 1.125rem;
+  }
+
+  .timerValue {
+    font-size: 2rem;
   }
 }
