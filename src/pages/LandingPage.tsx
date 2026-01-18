@@ -26,12 +26,11 @@ const LandingPage: React.FC = () => {
         <h1 className={styles.title}>SQRL</h1>
         <HeroCircle />
         <div className={styles.buttonContainer}>
-          {user ? (
+          <CanvasSetupButton />
+          {user && (
             <button onClick={() => navigate('/dashboard')} className={styles.dashboardButton}>
               Dashboard
             </button>
-          ) : (
-            <CanvasSetupButton />
           )}
           <button onClick={() => navigate('/about')} className={styles.aboutButton}>
             About SQRL
