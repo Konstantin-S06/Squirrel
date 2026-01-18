@@ -13,7 +13,7 @@
   justify-content: center;
   position: relative;
   transition: transform 0.2s ease;
-  overflow: hidden;
+  overflow: visible; /* Changed to visible so avatar can be fully seen */
 }
 
 .circle:hover {
@@ -25,6 +25,12 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.loading {
+  color: white;
+  font-size: 1rem;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

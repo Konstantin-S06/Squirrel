@@ -1,133 +1,205 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase/firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase/firebase';
+import { AvatarParts, AVATAR_CATALOG, DEFAULT_AVATAR, RARITY_COLORS } from '../types/avatar';
+import PixelAvatar from '../components/PixelAvatar';
 import Header from '../components/Header';
 import styles from './EditAvatarPage.module.css';
-import avatar1 from '../assets/avatars/avatar1.png';
-import avatar2 from '../assets/avatars/avatar2.png';
-import avatar3 from '../assets/avatars/avatar3.png';
-import avatar4 from '../assets/avatars/avatar4.png';
 
 const EditAvatarPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedAvatar, setSelectedAvatar] = useState<string>('avatar1.png');
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const avatarOptions = [
-    { filename: 'avatar1.png', src: avatar1 },
-    { filename: 'avatar2.png', src: avatar2 },
-    { filename: 'avatar3.png', src: avatar3 },
-    { filename: 'avatar4.png', src: avatar4 }
-  ];
+  const [parts, setParts] = useState<AvatarParts>(DEFAULT_AVATAR);
+  const [unlockedItems, setUnlockedItems] = useState<string[]>(['body_default', 'eyes_normal', 'mouth_smile', 'acc_none', 'bg_sky']);
+  const [acorns, setAcorns] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<string>('body');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadCurrentAvatar = async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      try {
-        const userRef = doc(db, 'users', user.uid);
-        const userSnap = await getDoc(userRef);
-        
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          if (userData.avatar) {
-            setSelectedAvatar(userData.avatar);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading avatar:', error);
-      }
-    };
-
-    loadCurrentAvatar();
+    loadUserAvatar();
   }, []);
 
-  const handleSave = async () => {
+  const loadUserAvatar = async () => {
     const user = auth.currentUser;
     if (!user) {
-      console.error('No user logged in');
+      navigate('/');
       return;
     }
 
-    setLoading(true);
-
     try {
-      const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, {
-        avatar: selectedAvatar
-      });
-    navigate('/dashboard');
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        if (data.avatarParts) {
+          setParts(data.avatarParts);
+        }
+        if (data.unlockedAvatarItems) {
+          setUnlockedItems(data.unlockedAvatarItems);
+        }
+        setAcorns(data.acorns || 0);
+      }
     } catch (error) {
-      console.error('Error saving avatar:', error);
+      console.error('Error loading avatar:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCancel = () => {
-    navigate('/dashboard');
+  const purchaseItem = async (itemId: string, cost: number) => {
+    if (acorns < cost || unlockedItems.includes(itemId)) return;
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      const newAcorns = acorns - cost;
+      const newUnlocked = [...unlockedItems, itemId];
+
+      await updateDoc(doc(db, 'users', user.uid), {
+        acorns: newAcorns,
+        unlockedAvatarItems: newUnlocked
+      });
+
+      setAcorns(newAcorns);
+      setUnlockedItems(newUnlocked);
+
+      alert(`✅ Unlocked! You now have ${newAcorns}🌰`);
+    } catch (error) {
+      console.error('Error purchasing item:', error);
+      alert('Error purchasing item. Please try again.');
+    }
   };
+
+  const selectPart = (itemId: string, category: string) => {
+    setParts(prev => ({ ...prev, [category]: itemId }));
+  };
+
+  const saveAvatar = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        avatarParts: parts
+      });
+      alert('✅ Avatar saved successfully!');
+    } catch (error) {
+      console.error('Error saving avatar:', error);
+      alert('Error saving avatar. Please try again.');
+    }
+  };
+
+  const handleSave = saveAvatar; // Keep for compatibility
+
+  const categories = [
+    { id: 'body', label: '🐿️ Body', emoji: '🐿️' },
+    { id: 'eyes', label: '👀 Eyes', emoji: '👀' },
+    { id: 'mouth', label: '😊 Mouth', emoji: '😊' },
+    { id: 'accessory', label: '🎩 Accessory', emoji: '🎩' }
+  ];
+
+  const availableItems = AVATAR_CATALOG.filter(
+    item => item.category === selectedCategory && unlockedItems.includes(item.id)
+  );
+
+  const shopItems = AVATAR_CATALOG.filter(
+    item => item.category === selectedCategory && !unlockedItems.includes(item.id)
+  );
+
+  if (loading) {
+    return <div className={styles.loading}>Loading avatar editor...</div>;
+  }
 
   return (
     <div className={styles.container}>
       <Header />
-      <header className={styles.header}>
-        <button onClick={handleCancel} className={styles.backButton}>
-          ← Back to Dashboard
-        </button>
-        <h1 className={styles.title}>Edit Avatar</h1>
-      </header>
 
-      <main className={styles.main}>
-        {/* Preview Section */}
-        <div className={styles.previewSection}>
-          <div className={styles.previewCard}>
-            <h2 className={styles.sectionTitle}>Preview</h2>
-            <div className={styles.avatarPreview}>
-              <img 
-                src={avatarOptions.find(a => a.filename === selectedAvatar)?.src} 
-                alt="Avatar preview" 
-                className={styles.previewImage}
-              />
-            </div>
-            <p className={styles.previewText}>This is how your avatar will look</p>
-          </div>
-        </div>
+      <div className={styles.content}>
+        <h1 className={styles.title}>🎨 Avatar Builder</h1>
+        <p className={styles.acorns}>🌰 {acorns} Acorns</p>
 
-        {/* Avatar Selection */}
-        <div className={styles.selectionSection}>
-          <h2 className={styles.sectionTitle}>Choose Avatar</h2>
-          <div className={styles.avatarGrid}>
-            {avatarOptions.map((avatar) => (
-              <button
-                key={avatar.filename}
-                className={`${styles.avatarOption} ${
-                  selectedAvatar === avatar.filename ? styles.selected : ''
-                }`}
-                onClick={() => setSelectedAvatar(avatar.filename)}
-              >
-                <img 
-                  src={avatar.src} 
-                  alt={avatar.filename} 
-                  className={styles.avatarImage}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className={styles.actions}>
-          <button onClick={handleCancel} className={styles.cancelButton}>
-            Cancel
+        <div className={styles.preview}>
+          <PixelAvatar parts={parts} size={200} />
+          <button onClick={saveAvatar} className={styles.saveButton}>
+            💾 Save Avatar
           </button>
-          <button onClick={handleSave} className={styles.saveButton} disabled={loading}>
-            {loading ? 'Saving...' : 'Save Changes'}
+          <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
+            ← Back to Dashboard
           </button>
         </div>
-      </main>
+
+        <div className={styles.categories}>
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`${styles.categoryButton} ${selectedCategory === cat.id ? styles.active : ''}`}
+            >
+              {cat.emoji} {cat.id}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.items}>
+          {availableItems.length > 0 && (
+            <>
+              <h3 className={styles.sectionTitle}>Your Items</h3>
+              <div className={styles.grid}>
+                {availableItems.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => selectPart(item.id, item.category)}
+                    className={`${styles.itemCard} ${parts[item.category] === item.id ? styles.selected : ''}`}
+                    style={{ borderColor: RARITY_COLORS[item.rarity] }}
+                  >
+                    <div className={styles.itemPreview}>
+                      <PixelAvatar
+                        parts={{...DEFAULT_AVATAR, [item.category]: item.id}}
+                        size={64}
+                      />
+                    </div>
+                    <span className={styles.itemName}>{item.name}</span>
+                    <span className={styles.rarity} style={{ color: RARITY_COLORS[item.rarity] }}>
+                      {item.rarity}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {shopItems.length > 0 && (
+            <>
+              <h3 className={styles.sectionTitle}>🛒 Shop</h3>
+              <div className={styles.grid}>
+                {shopItems.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => purchaseItem(item.id, item.cost)}
+                    className={styles.shopCard}
+                    disabled={acorns < item.cost}
+                    style={{ borderColor: RARITY_COLORS[item.rarity] }}
+                  >
+                    <div className={styles.itemPreview}>
+                      <PixelAvatar
+                        parts={{...DEFAULT_AVATAR, [item.category]: item.id}}
+                        size={64}
+                      />
+                    </div>
+                    <span className={styles.itemName}>{item.name}</span>
+                    <span className={styles.rarity} style={{ color: RARITY_COLORS[item.rarity] }}>
+                      {item.rarity}
+                    </span>
+                    <span className={styles.cost}>
+                      {acorns >= item.cost ? `🌰 ${item.cost}` : `🔒 ${item.cost}`}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

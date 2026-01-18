@@ -1,4 +1,5 @@
 // Battle utility functions
+import { AvatarParts } from '../types/avatar';
 
 export interface UserBattleData {
   uid: string;
@@ -7,6 +8,8 @@ export interface UserBattleData {
   xp: number;
   acorns: number;
   avatarUrl: string;
+  avatarParts?: AvatarParts;
+  unlockedAvatarItems?: string[];
   lastBattleTime: Date | null;
   shieldEndTime: Date | null;
 }
