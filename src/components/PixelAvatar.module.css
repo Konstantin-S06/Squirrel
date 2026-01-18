@@ -1,0 +1,11 @@
+.pixelAvatar {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  transition: transform 0.2s;
+  display: block;
+}
+
+.pixelAvatar:hover {
+  transform: scale(1.05);
+}
