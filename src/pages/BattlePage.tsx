@@ -268,11 +268,14 @@ const BattlePage: React.FC = () => {
     <div className={styles.container}>
       <Header />
       <header className={styles.header}>
+        <h1 className={styles.title}>Battle</h1>
+      </header>
+
+      <div className={styles.backButtonContainer}>
         <button onClick={handleBack} className={styles.backButton}>
           ← Back to Dashboard
         </button>
-        <h1 className={styles.title}>Battle</h1>
-      </header>
+      </div>
 
       <main className={styles.main}>
         {/* Shield Status Section */}
