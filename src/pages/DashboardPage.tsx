@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { fetchUserData } from '../services/battleService';
+import { useCanvasData } from '../hooks/useCanvasData';
+import { CanvasAssignment, CanvasCourse } from '../services/canvasConfig';
 import PlayerStats from '../components/PlayerStats';
 import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
@@ -18,6 +20,8 @@ interface Activity {
   id: string;
   message: string;
   timestamp: Date;
+  courseCode?: string;
+  dueDate?: string;
 }
 
 const DashboardPage: React.FC = () => {
@@ -27,6 +31,8 @@ const DashboardPage: React.FC = () => {
   const [level, setLevel] = useState<number>(1);
   const [currentXP, setCurrentXP] = useState<number>(0);
   const [maxXP, setMaxXP] = useState<number>(100);
+  const [loadingAssignments, setLoadingAssignments] = useState<boolean>(false);
+  const { getCourses, getCourseAssignments, isConnected } = useCanvasData();
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -48,34 +54,15 @@ const DashboardPage: React.FC = () => {
           setMaxXP(100); // 100 XP per level
         }
 
-        // Load journal entries from Firebase
-        const journalRef = collection(db, 'journal');
-        const journalQuery = query(
-          journalRef,
-          where('userId', '==', user.uid),
-          orderBy('timestamp', 'desc'),
-          limit(20)
-        );
-        
-        const journalSnapshot = await getDocs(journalQuery);
-        const journalEntries: Activity[] = journalSnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            message: data.message || '',
-            timestamp: data.timestamp?.toDate() || new Date(),
-          };
-        });
-
-        // If no entries, add a welcome message
-        if (journalEntries.length === 0) {
+        // Load incomplete assignments from Canvas
+        if (isConnected) {
+          await loadIncompleteAssignments(user.uid);
+        } else {
           setActivities([{
-            id: 'welcome',
-            message: 'Welcome to Squirrel!',
+            id: 'canvas-not-connected',
+            message: 'Connect Canvas to see your assignments',
             timestamp: new Date(),
           }]);
-        } else {
-          setActivities(journalEntries);
         }
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -90,7 +77,133 @@ const DashboardPage: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isConnected]);
+
+  const loadIncompleteAssignments = async (uid: string) => {
+    setLoadingAssignments(true);
+    try {
+      // Get user's courses from Firestore
+      const userRef = doc(db, 'users', uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) {
+        setActivities([]);
+        return;
+      }
+
+      const userData = userSnap.data();
+      const userCourses: string[] = userData.courses || [];
+
+      if (userCourses.length === 0) {
+        setActivities([{
+          id: 'no-courses',
+          message: 'No courses found. Your courses will sync automatically.',
+          timestamp: new Date(),
+        }]);
+        return;
+      }
+
+      // Get all Canvas courses
+      const allCanvasCourses: CanvasCourse[] = await getCourses();
+      
+      // Filter courses to only those in user's courses array
+      const enrolledCourses = allCanvasCourses.filter(course =>
+        userCourses.includes(course.course_code)
+      );
+
+      if (enrolledCourses.length === 0) {
+        setActivities([{
+          id: 'no-matching-courses',
+          message: 'No matching Canvas courses found',
+          timestamp: new Date(),
+        }]);
+        return;
+      }
+
+      // Fetch assignments for each course in parallel
+      const assignmentPromises = enrolledCourses.map(async (course) => {
+        try {
+          const assignments = await getCourseAssignments(course.id);
+          return assignments.map(assignment => ({
+            ...assignment,
+            course_code: course.course_code,
+            course_name: course.name
+          }));
+        } catch (error) {
+          console.error(`Error fetching assignments for course ${course.course_code}:`, error);
+          return [];
+        }
+      });
+
+      const assignmentArrays = await Promise.all(assignmentPromises);
+      const allAssignments = assignmentArrays.flat();
+
+      // Filter to only incomplete assignments
+      const incompleteAssignments = allAssignments.filter(assignment => {
+        // Check submission status
+        if (assignment.submission) {
+          const submission = assignment.submission;
+          // If submitted, it's complete
+          if (submission.submitted_at || 
+              submission.workflow_state === 'submitted' || 
+              submission.workflow_state === 'graded') {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Convert to Activity format and sort by due date
+      const assignmentActivities: Activity[] = incompleteAssignments
+        .map(assignment => {
+          let dueDate = 'No deadline';
+          let timestamp = new Date();
+          
+          if (assignment.due_at) {
+            const due = new Date(assignment.due_at);
+            timestamp = due;
+            const year = due.getFullYear();
+            const month = String(due.getMonth() + 1).padStart(2, '0');
+            const day = String(due.getDate()).padStart(2, '0');
+            dueDate = `${year}-${month}-${day}`;
+          }
+
+          return {
+            id: `assignment-${assignment.id}`,
+            message: assignment.name,
+            timestamp,
+            courseCode: assignment.course_code,
+            dueDate
+          };
+        })
+        .sort((a, b) => {
+          // Sort by timestamp (soonest first)
+          if (a.dueDate === 'No deadline' && b.dueDate !== 'No deadline') return 1;
+          if (b.dueDate === 'No deadline' && a.dueDate !== 'No deadline') return -1;
+          if (a.dueDate === 'No deadline' && b.dueDate === 'No deadline') return 0;
+          return a.timestamp.getTime() - b.timestamp.getTime();
+        });
+
+      if (assignmentActivities.length === 0) {
+        setActivities([{
+          id: 'all-complete',
+          message: 'All assignments complete! Great work! 🎉',
+          timestamp: new Date(),
+        }]);
+      } else {
+        setActivities(assignmentActivities);
+      }
+    } catch (error) {
+      console.error('Error loading incomplete assignments:', error);
+      setActivities([{
+        id: 'error',
+        message: 'Error loading assignments',
+        timestamp: new Date(),
+      }]);
+    } finally {
+      setLoadingAssignments(false);
+    }
+  };
 
   const handleEdit = () => {
     navigate('/edit-avatar');
