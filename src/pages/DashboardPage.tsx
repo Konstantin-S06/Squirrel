@@ -153,8 +153,22 @@ const DashboardPage: React.FC = () => {
         return true;
       });
 
+      // Filter out past-due assignments
+      const now = new Date();
+      const upcomingIncompleteAssignments = incompleteAssignments.filter(assignment => {
+        if (!assignment.due_at) {
+          return true;
+        }
+        try {
+          const dueDate = new Date(assignment.due_at);
+          return dueDate >= now;
+        } catch (error) {
+          return true;
+        }
+      });
+
       // Convert to Activity format and sort by due date
-      const assignmentActivities: Activity[] = incompleteAssignments
+      const assignmentActivities: Activity[] = upcomingIncompleteAssignments
         .map(assignment => {
           let dueDate = 'No deadline';
           let timestamp = new Date();
