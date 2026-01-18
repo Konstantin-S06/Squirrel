@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
+import { fetchUserData } from '../services/battleService';
 import PlayerStats from '../components/PlayerStats';
 import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
@@ -18,38 +23,72 @@ const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [acorns, setAcorns] = useState<number>(0);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [level, setLevel] = useState<number>(1);
+  const [currentXP, setCurrentXP] = useState<number>(0);
+  const [maxXP, setMaxXP] = useState<number>(100);
 
   useEffect(() => {
-    // Load acorns from localStorage or default to 0
-    const savedAcorns = localStorage.getItem('acorns');
-    if (savedAcorns) {
-      setAcorns(parseInt(savedAcorns, 10));
-    }
+    const loadUserData = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
 
-    // Load activities from localStorage or initialize with default
-    const savedActivities = localStorage.getItem('activities');
-    if (savedActivities) {
       try {
-        const parsed = JSON.parse(savedActivities);
-        setActivities(parsed.map((a: any) => ({
-          ...a,
-          timestamp: new Date(a.timestamp),
-        })));
-      } catch (e) {
-        console.error('Error parsing activities:', e);
+        // Load user stats from Firebase
+        const userData = await fetchUserData(user.uid);
+        if (userData) {
+          setAcorns(userData.acorns);
+          setLevel(userData.level);
+          
+          // Calculate current XP and max XP based on level
+          // Level 1: 0-99 XP, Level 2: 100-199 XP, etc.
+          const baseXP = (userData.level - 1) * 100;
+          const xpInCurrentLevel = userData.xp - baseXP;
+          setCurrentXP(xpInCurrentLevel);
+          setMaxXP(100); // 100 XP per level
+        }
+
+        // Load journal entries from Firebase
+        const journalRef = collection(db, 'journal');
+        const journalQuery = query(
+          journalRef,
+          where('userId', '==', user.uid),
+          orderBy('timestamp', 'desc'),
+          limit(20)
+        );
+        
+        const journalSnapshot = await getDocs(journalQuery);
+        const journalEntries: Activity[] = journalSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            message: data.message || '',
+            timestamp: data.timestamp?.toDate() || new Date(),
+          };
+        });
+
+        // If no entries, add a welcome message
+        if (journalEntries.length === 0) {
+          setActivities([{
+            id: 'welcome',
+            message: 'Welcome to Squirrel!',
+            timestamp: new Date(),
+          }]);
+        } else {
+          setActivities(journalEntries);
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
       }
-    } else {
-      // Initialize with default activities
-      const defaultActivities: Activity[] = [
-        {
-          id: '1',
-          message: 'Welcome to Squirrel!',
-          timestamp: new Date(),
-        },
-      ];
-      setActivities(defaultActivities);
-      localStorage.setItem('activities', JSON.stringify(defaultActivities));
-    }
+    };
+
+    loadUserData();
+
+    // Listen for auth state changes
+    const unsubscribe = auth.onAuthStateChanged(() => {
+      loadUserData();
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleEdit = () => {
@@ -91,7 +130,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         <main className={styles.main}>
-          <PlayerStats level="-" currentXP="-" maxXP="-" />
+          <PlayerStats level={level} currentXP={currentXP} maxXP={maxXP} />
           <AvatarCircle />
           <div className={styles.actions}>
             <ActionButton label="Edit" onClick={handleEdit} variant="primary" />
