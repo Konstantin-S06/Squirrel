@@ -178,3 +178,81 @@ export const executeBattle = async (
 
   return result;
 };
+
+/**
+ * Award rewards for completing an assignment (1 acorn, 10 XP)
+ * Tracks completed assignments to prevent double-rewarding
+ */
+export const awardAssignmentReward = async (
+  uid: string,
+  assignmentId: number
+): Promise<{ success: boolean; acorns: number; xp: number; level?: number }> => {
+  try {
+    const userRef = doc(db, 'users', uid);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+      throw new Error('User not found');
+    }
+
+    const userData = userDoc.data();
+    
+    // Check if assignment was already rewarded
+    const completedAssignments: number[] = userData.completedAssignments || [];
+    if (completedAssignments.includes(assignmentId)) {
+      // Already rewarded
+      return {
+        success: false,
+        acorns: userData.acorns || 50,
+        xp: userData.xp || 0,
+        level: userData.level || 1,
+      };
+    }
+
+    // Calculate new values
+    const currentAcorns = userData.acorns || 50;
+    const currentXP = userData.xp || 0;
+    const currentLevel = userData.level || 1;
+
+    const newAcorns = currentAcorns + 1;
+    const newXP = currentXP + 10;
+
+    // Calculate level based on XP (100 XP per level)
+    let newLevel = currentLevel;
+    const levelXP = Math.floor(newXP / 100) + 1;
+    if (levelXP > currentLevel) {
+      newLevel = levelXP;
+    }
+
+    // Update Firestore
+    const batch = writeBatch(db);
+    batch.update(userRef, {
+      acorns: newAcorns,
+      xp: newXP,
+      level: newLevel,
+      completedAssignments: [...completedAssignments, assignmentId],
+    });
+
+    await batch.commit();
+
+    // Create journal entry
+    const journalRef = collection(db, 'journal');
+    const now = Timestamp.now();
+    await addDoc(journalRef, {
+      userId: uid,
+      message: `✅ Completed assignment! Earned 1 acorn and 10 XP.`,
+      timestamp: now,
+      type: 'assignment',
+    });
+
+    return {
+      success: true,
+      acorns: newAcorns,
+      xp: newXP,
+      level: newLevel,
+    };
+  } catch (error) {
+    console.error('Error awarding assignment reward:', error);
+    throw error;
+  }
+};
