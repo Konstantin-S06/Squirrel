@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
-import { isCanvasConnected } from '../services/canvasService';
+import { validateCanvasToken, fetchCanvasCourses } from '../services/canvasConfig';
+import { onAuthStateChanged } from 'firebase/auth';
+import Header from '../components/Header';
 import styles from './CanvasSetupPage.module.css';
 
 const CanvasSetupPage: React.FC = () => {
@@ -11,32 +13,29 @@ const CanvasSetupPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
-    const [checkingConnection, setCheckingConnection] = useState(true);
+    const [hasExistingKey, setHasExistingKey] = useState(false);
+    const [checkingKey, setCheckingKey] = useState(true);
 
-    // Check if Canvas is already connected and redirect if it is
     useEffect(() => {
-        const checkExistingConnection = async () => {
-            const user = auth.currentUser;
-            if (!user) {
-                setCheckingConnection(false);
-                return;
-            }
-
-            try {
-                const connected = await isCanvasConnected();
-                if (connected) {
-                    // Already connected, redirect to dashboard
-                    navigate('/dashboard');
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        if (data.canvasApiKey && data.canvasApiKey.trim() !== '') {
+                            setHasExistingKey(true);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Error checking API key:', err);
                 }
-            } catch (error) {
-                console.error('Error checking Canvas connection:', error);
-            } finally {
-                setCheckingConnection(false);
             }
-        };
+            setCheckingKey(false);
+        });
 
-        checkExistingConnection();
-    }, [navigate]);
+        return () => unsubscribe();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,60 +47,101 @@ const CanvasSetupPage: React.FC = () => {
             const user = auth.currentUser;
             if (!user) {
                 setError('You must be logged in');
+                setLoading(false);
                 return;
             }
 
+            // Validate Canvas API token
+            const trimmedKey = apiKey.trim();
+            const isValid = await validateCanvasToken(trimmedKey);
+            if (!isValid) {
+                setError('Invalid Canvas API token. Please check your token and try again.');
+                return;
+            }
+
+            // Fetch courses to verify connectivity
+            const courses = await fetchCanvasCourses(apiKey);
+            console.log(`Successfully connected! Found ${courses.length} courses.`);
+
+            // Save to Firestore with course data
             await setDoc(doc(db, 'users', user.uid), {
                 canvasApiKey: apiKey,
+                canvasConnected: true,
+                canvasCourseCount: courses.length,
                 updatedAt: new Date()
             }, { merge: true });
 
-            navigate('/dashboard');
             setSuccess(true);
             setApiKey('');
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 1000);
         } catch (err) {
-            setError('Failed to save Canvas credentials');
+            setError('Failed to connect to Canvas. Please check your token and try again.');
             console.error(err);
         } finally {
             setLoading(false);
         }
     };
 
-    // Show loading state while checking connection
-    if (checkingConnection) {
+    if (checkingKey) {
         return (
             <div className={styles.container}>
-                <h1>Connect Canvas LMS</h1>
-                <p className={styles.subtitle}>Checking connection...</p>
+                <Header />
+                <div className={styles.loadingContainer}>
+                    <p>Checking connection status...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (hasExistingKey) {
+        return (
+            <div className={styles.container}>
+                <Header />
+                <div className={styles.connectedContainer}>
+                    <div className={styles.successIcon}>✓</div>
+                    <h1>Canvas Already Connected</h1>
+                    <p className={styles.subtitle}>Your Canvas LMS account is already connected to Squirrel.</p>
+                    <button 
+                        onClick={() => navigate('/dashboard')} 
+                        className={styles.dashboardButton}
+                    >
+                        Go to Dashboard
+                    </button>
+                </div>
             </div>
         );
     }
 
     return (
         <div className={styles.container}>
-            <h1>Connect Canvas LMS</h1>
-            <p className={styles.subtitle}>Connect your University of Toronto Canvas account</p>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="apiKey">Canvas API Access Token</label>
-                    <input
-                        id="apiKey"
-                        type="password"
-                        placeholder="Enter your Canvas API token"
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        required
-                    />
-                    <small>Get your token from Canvas Account → Settings → New Access Token</small>
-                </div>
+            <Header />
+            <div className={styles.formContainer}>
+                <h1>Connect Canvas LMS</h1>
+                <p className={styles.subtitle}>Connect your University of Toronto Canvas account</p>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <div className={styles.inputGroup}>
+                        <label htmlFor="apiKey">Canvas API Access Token</label>
+                        <input
+                            id="apiKey"
+                            type="password"
+                            placeholder="Enter your Canvas API token"
+                            value={apiKey}
+                            onChange={(e) => setApiKey(e.target.value)}
+                            required
+                        />
+                        <small>Get your token from Canvas Account → Settings → New Access Token</small>
+                    </div>
 
-                {error && <div className={styles.error}>{error}</div>}
-                {success && <div className={styles.success}>Canvas credentials saved successfully!</div>}
+                    {error && <div className={styles.error}>{error}</div>}
+                    {success && <div className={styles.success}>Canvas credentials saved successfully!</div>}
 
-                <button type="submit" disabled={loading} className={styles.submitButton}>
-                    {loading ? 'Saving...' : 'Save Canvas Token'}
-                </button>
-            </form>
+                    <button type="submit" disabled={loading} className={styles.submitButton}>
+                        {loading ? 'Saving...' : 'Save Canvas Token'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

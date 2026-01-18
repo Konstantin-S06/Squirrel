@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 import { fetchUserData } from '../services/battleService';
-import { calculateLevel } from '../utils/battleUtils';
+import { useCanvasData } from '../hooks/useCanvasData';
+import { CanvasAssignment, CanvasCourse } from '../services/canvasConfig';
 import PlayerStats from '../components/PlayerStats';
 import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
 import AcornCounter from '../components/AcornCounter';
 import ActivityJournal from '../components/ActivityJournal';
+import Timetable from '../components/Timetable';
 import Header from '../components/Header';
 import styles from './DashboardPage.module.css';
 
@@ -15,6 +20,8 @@ interface Activity {
   id: string;
   message: string;
   timestamp: Date;
+  courseCode?: string;
+  dueDate?: string;
 }
 
 const DashboardPage: React.FC = () => {
@@ -24,72 +31,179 @@ const DashboardPage: React.FC = () => {
   const [level, setLevel] = useState<number>(1);
   const [currentXP, setCurrentXP] = useState<number>(0);
   const [maxXP, setMaxXP] = useState<number>(100);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingAssignments, setLoadingAssignments] = useState<boolean>(false);
+  const { getCourses, getCourseAssignments, isConnected } = useCanvasData();
 
   useEffect(() => {
-    // Load user data from Firebase
     const loadUserData = async () => {
       const user = auth.currentUser;
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      if (!user) return;
 
       try {
+        // Load user stats from Firebase
         const userData = await fetchUserData(user.uid);
         if (userData) {
-          // Get level and XP from Firebase
-          const userLevel = userData.level || calculateLevel(userData.xp || 0);
-          const userXP = userData.xp || 0;
+          setAcorns(userData.acorns);
+          setLevel(userData.level);
           
-          setLevel(userLevel);
-          
-          // Display XP progress: show total XP / XP needed for next level
-          // Level 1 (0-99 XP): show 0-99 / 100 (XP needed for level 2)
-          // Level 2 (100-199 XP): show 100-199 / 200 (XP needed for level 3)
-          // Formula: XP needed for next level = currentLevel * 100
-          setCurrentXP(userXP);
-          setMaxXP(userLevel * 100);
-          
-          // Update acorns from Firebase if available
-          if (userData.acorns !== undefined) {
-            setAcorns(userData.acorns);
-          }
+          // Calculate current XP and max XP based on level
+          // Level 1: 0-99 XP, Level 2: 100-199 XP, etc.
+          const baseXP = (userData.level - 1) * 100;
+          const xpInCurrentLevel = userData.xp - baseXP;
+          setCurrentXP(xpInCurrentLevel);
+          setMaxXP(100); // 100 XP per level
+        }
+
+        // Load incomplete assignments from Canvas
+        if (isConnected) {
+          await loadIncompleteAssignments(user.uid);
+        } else {
+          setActivities([{
+            id: 'canvas-not-connected',
+            message: 'Connect Canvas to see your assignments',
+            timestamp: new Date(),
+          }]);
         }
       } catch (error) {
         console.error('Error loading user data:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
     loadUserData();
 
-    // Load activities from localStorage or initialize with default
-    const savedActivities = localStorage.getItem('activities');
-    if (savedActivities) {
-      try {
-        const parsed = JSON.parse(savedActivities);
-        setActivities(parsed.map((a: any) => ({
-          ...a,
-          timestamp: new Date(a.timestamp),
-        })));
-      } catch (e) {
-        console.error('Error parsing activities:', e);
+    // Listen for auth state changes
+    const unsubscribe = auth.onAuthStateChanged(() => {
+      loadUserData();
+    });
+
+    return () => unsubscribe();
+  }, [isConnected]);
+
+  const loadIncompleteAssignments = async (uid: string) => {
+    setLoadingAssignments(true);
+    try {
+      // Get user's courses from Firestore
+      const userRef = doc(db, 'users', uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) {
+        setActivities([]);
+        return;
       }
-    } else {
-      // Initialize with default activities
-      const defaultActivities: Activity[] = [
-        {
-          id: '1',
-          message: 'Welcome to Squirrel!',
+
+      const userData = userSnap.data();
+      const userCourses: string[] = userData.courses || [];
+
+      if (userCourses.length === 0) {
+        setActivities([{
+          id: 'no-courses',
+          message: 'No courses found. Your courses will sync automatically.',
           timestamp: new Date(),
-        },
-      ];
-      setActivities(defaultActivities);
-      localStorage.setItem('activities', JSON.stringify(defaultActivities));
+        }]);
+        return;
+      }
+
+      // Get all Canvas courses
+      const allCanvasCourses: CanvasCourse[] = await getCourses();
+      
+      // Filter courses to only those in user's courses array
+      const enrolledCourses = allCanvasCourses.filter(course =>
+        userCourses.includes(course.course_code)
+      );
+
+      if (enrolledCourses.length === 0) {
+        setActivities([{
+          id: 'no-matching-courses',
+          message: 'No matching Canvas courses found',
+          timestamp: new Date(),
+        }]);
+        return;
+      }
+
+      // Fetch assignments for each course in parallel
+      const assignmentPromises = enrolledCourses.map(async (course) => {
+        try {
+          const assignments = await getCourseAssignments(course.id);
+          return assignments.map(assignment => ({
+            ...assignment,
+            course_code: course.course_code,
+            course_name: course.name
+          }));
+        } catch (error) {
+          console.error(`Error fetching assignments for course ${course.course_code}:`, error);
+          return [];
+        }
+      });
+
+      const assignmentArrays = await Promise.all(assignmentPromises);
+      const allAssignments = assignmentArrays.flat();
+
+      // Filter to only incomplete assignments
+      const incompleteAssignments = allAssignments.filter(assignment => {
+        // Check submission status
+        if (assignment.submission) {
+          const submission = assignment.submission;
+          // If submitted, it's complete
+          if (submission.submitted_at || 
+              submission.workflow_state === 'submitted' || 
+              submission.workflow_state === 'graded') {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Convert to Activity format and sort by due date
+      const assignmentActivities: Activity[] = incompleteAssignments
+        .map(assignment => {
+          let dueDate = 'No deadline';
+          let timestamp = new Date();
+          
+          if (assignment.due_at) {
+            const due = new Date(assignment.due_at);
+            timestamp = due;
+            const year = due.getFullYear();
+            const month = String(due.getMonth() + 1).padStart(2, '0');
+            const day = String(due.getDate()).padStart(2, '0');
+            dueDate = `${year}-${month}-${day}`;
+          }
+
+          return {
+            id: `assignment-${assignment.id}`,
+            message: assignment.name,
+            timestamp,
+            courseCode: assignment.course_code,
+            dueDate
+          };
+        })
+        .sort((a, b) => {
+          // Sort by timestamp (soonest first)
+          if (a.dueDate === 'No deadline' && b.dueDate !== 'No deadline') return 1;
+          if (b.dueDate === 'No deadline' && a.dueDate !== 'No deadline') return -1;
+          if (a.dueDate === 'No deadline' && b.dueDate === 'No deadline') return 0;
+          return a.timestamp.getTime() - b.timestamp.getTime();
+        });
+
+      if (assignmentActivities.length === 0) {
+        setActivities([{
+          id: 'all-complete',
+          message: 'All assignments complete! Great work! 🎉',
+          timestamp: new Date(),
+        }]);
+      } else {
+        setActivities(assignmentActivities);
+      }
+    } catch (error) {
+      console.error('Error loading incomplete assignments:', error);
+      setActivities([{
+        id: 'error',
+        message: 'Error loading assignments',
+        timestamp: new Date(),
+      }]);
+    } finally {
+      setLoadingAssignments(false);
     }
-  }, []);
+  };
 
   const handleEdit = () => {
     navigate('/edit-avatar');
@@ -121,6 +235,7 @@ const DashboardPage: React.FC = () => {
           <button onClick={handleCourses} className={styles.coursesButton}>
             📚 Courses
           </button>
+          <Timetable />
         </div>
 
         {/* Top Right Section: Acorn Counter & Journal */}
@@ -130,11 +245,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         <main className={styles.main}>
-          {loading ? (
-            <PlayerStats level="Loading..." currentXP="..." maxXP="..." />
-          ) : (
-            <PlayerStats level={level} currentXP={currentXP} maxXP={maxXP} />
-          )}
+          <PlayerStats level={level} currentXP={currentXP} maxXP={maxXP} />
           <AvatarCircle />
           <div className={styles.actions}>
             <ActionButton label="Edit" onClick={handleEdit} variant="primary" />

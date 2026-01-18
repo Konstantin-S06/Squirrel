@@ -1,0 +1,299 @@
+.timetableContainer {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: fit-content;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.title {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.uploadButton {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.uploadButton:hover {
+  background: #45a049;
+}
+
+.uploadButton:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.daySelector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.dayButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.dayButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dayButton.active {
+  background: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eventCard {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 4px solid #4CAF50;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.eventCard:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.eventCard.happening {
+  border-left-color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.eventCard.attended {
+  opacity: 0.7;
+  border-left-color: #888;
+}
+
+.eventHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.eventTitle {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.courseCode {
+  color: #FFD700;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.eventTime {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.eventLocation {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4CAF50;
+}
+
+.checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.checkboxLabel {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.checkboxLabel.disabled {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.happeningBadge {
+  background: #FFD700;
+  color: #1a4d2e;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.emptyState {
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+}
+
+.attendanceStats {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  color: white;
+  font-size: 0.85rem;
+}
+
+.attendanceStats strong {
+  color: #4CAF50;
+}
+
+.streakBanner {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  color: white;
+  font-size: 0.9rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.streakBanner strong {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.rewardPopup {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: white;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rewardTitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.rewardDetails {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rewardItem {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.multiplier {
+  color: #FFD700;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.streakLabel {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #FFD700;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 968px) {
+  .timetableContainer {
+    max-height: none;
+  }
+
+  .daySelector {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.5rem;
+  }
+
+  .dayButton {
+    flex-shrink: 0;
+  }
+}

@@ -5,6 +5,8 @@ interface Activity {
   id: string;
   message: string;
   timestamp: Date;
+  courseCode?: string;
+  dueDate?: string;
 }
 
 interface ActivityJournalProps {
@@ -38,18 +40,24 @@ const ActivityJournal: React.FC<ActivityJournalProps> = ({ activities }) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.icon}>📔</span>
-        <span className={styles.title}>Journal</span>
+        <span className={styles.title}>Incomplete Assignments</span>
       </div>
       <div className={styles.content}>
         {activities.length === 0 ? (
-          <div className={styles.empty}>No recent activity</div>
+          <div className={styles.empty}>No incomplete assignments</div>
         ) : (
           <div className={styles.activities}>
             {activities.map((activity) => (
               <div key={activity.id} className={styles.activity}>
                 <div className={styles.activityMessage}>{activity.message}</div>
+                {activity.courseCode && (
+                  <div className={styles.activityCourse}>{activity.courseCode}</div>
+                )}
                 <div className={styles.activityTime}>
-                  {formatDate(activity.timestamp)} • {formatTime(activity.timestamp)}
+                  {activity.dueDate 
+                    ? <><span className={styles.dueLabel}>Due:</span> {activity.dueDate}</> 
+                    : `${formatDate(activity.timestamp)} • ${formatTime(activity.timestamp)}`
+                  }
                 </div>
               </div>
             ))}

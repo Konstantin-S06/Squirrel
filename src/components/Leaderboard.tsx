@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 import styles from './Leaderboard.module.css';
 
 interface LeaderboardProps {
@@ -8,37 +10,86 @@ interface LeaderboardProps {
 interface LeaderboardEntry {
   rank: number;
   username: string;
-  level: number;
   xp: number;
 }
 
+interface UserDoc {
+  name: string;
+  xp: number;
+  courses?: string[];
+}
+
 const Leaderboard: React.FC<LeaderboardProps> = ({ courseName }) => {
-  const leaderboardData: LeaderboardEntry[] = [
-    { rank: 1, username: 'SquirrelMaster', level: 12, xp: 2450 },
-    { rank: 2, username: 'AcornHoarder', level: 11, xp: 2180 },
-    { rank: 3, username: 'NuttyProf', level: 10, xp: 1920 },
-    { rank: 4, username: 'TreeClimber', level: 9, xp: 1750 },
-    { rank: 5, username: 'StudyNut', level: 9, xp: 1680 },
-    { rank: 6, username: 'QuizWhiz', level: 8, xp: 1540 },
-    { rank: 7, username: 'MathSquirrel', level: 8, xp: 1490 },
-    { rank: 8, username: 'CodeNut', level: 7, xp: 1320 },
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      if (!courseName) {
+        setLeaderboardData([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('courses', 'array-contains', courseName));
+        const querySnapshot = await getDocs(q);
+
+        const users: UserDoc[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as UserDoc;
+          users.push({
+            name: data.name || 'Anonymous',
+            xp: data.xp || 0,
+            courses: data.courses || []
+          });
+        });
+
+        const sortedUsers = users
+          .sort((a, b) => b.xp - a.xp)
+          .slice(0, 5)
+          .map((user, index) => ({
+            rank: index + 1,
+            username: user.name,
+            xp: user.xp
+          }));
+
+        setLeaderboardData(sortedUsers);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        setLeaderboardData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, [courseName]);
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Leaderboard</h2>
       <div className={styles.list}>
-        {leaderboardData.map((entry) => (
-          <div key={entry.rank} className={styles.entry}>
-            <div className={styles.rank}>#{entry.rank}</div>
-            <div className={styles.info}>
-              <div className={styles.username}>{entry.username}</div>
-              <div className={styles.stats}>
-                Level {entry.level} • {entry.xp} XP
+        {loading ? (
+          <div className={styles.placeholder}>Loading...</div>
+        ) : leaderboardData.length === 0 ? (
+          <div className={styles.placeholder}>No users enrolled in this course</div>
+        ) : (
+          leaderboardData.map((entry) => (
+            <div key={entry.rank} className={styles.entry}>
+              <div className={styles.rank}>#{entry.rank}</div>
+              <div className={styles.info}>
+                <div className={styles.username}>{entry.username}</div>
+                <div className={styles.stats}>
+                  {entry.xp} XP
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

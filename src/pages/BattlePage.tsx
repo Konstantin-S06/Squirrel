@@ -82,13 +82,12 @@ const BattlePage: React.FC = () => {
         return;
       }
 
-      // COOLDOWN DISABLED FOR TESTING
       // Check if user can battle (8 hour cooldown)
-      // if (!canBattle(userData.lastBattleTime)) {
-      //   setError('Battle cooldown not expired yet!');
-      //   setIsLoading(false);
-      //   return;
-      // }
+      if (!canBattle(userData.lastBattleTime)) {
+        setError('Battle cooldown not expired yet!');
+        setIsLoading(false);
+        return;
+      }
 
       // Find random opponent
       const opponent = await findRandomOpponent(user.uid);
@@ -109,11 +108,9 @@ const BattlePage: React.FC = () => {
         opponentData: result.opponentData,
       });
 
-      // COOLDOWN DISABLED FOR TESTING
       // Update timers (8 hours from now)
-      // const eightHoursInSeconds = 8 * 60 * 60;
-      // setResetTime(eightHoursInSeconds);
-      setResetTime(0); // Keep timer at 0 for testing
+      const eightHoursInSeconds = 8 * 60 * 60;
+      setResetTime(eightHoursInSeconds);
 
       // Show results modal
       setShowResultModal(true);
@@ -132,9 +129,7 @@ const BattlePage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.headerWrapper}>
-        <Header />
-      </div>
+      <Header />
       <div className={styles.contentWrapper}>
         {/* Back to Dashboard Button - Top Left */}
         <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
@@ -154,8 +149,7 @@ const BattlePage: React.FC = () => {
         <button
           className={styles.battleRandomButton}
           onClick={handleBattleRandom}
-          disabled={isLoading}
-          // COOLDOWN DISABLED FOR TESTING - removed: resetTime > 0 ||
+          disabled={resetTime > 0 || isLoading}
         >
           {isLoading ? 'Battling...' : 'Battle Random'}
         </button>

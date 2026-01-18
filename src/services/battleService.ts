@@ -149,5 +149,32 @@ export const executeBattle = async (
   await batch.commit();
   await addDoc(battlesRef, battleRecord);
 
+  // Create journal entries for both users
+  const journalRef = collection(db, 'journal');
+  
+  // Attacker's journal entry
+  const attackerMessage = result.won
+    ? `🎉 Won battle against ${defender.name}! Gained ${result.attacker.xpGained} XP and ${result.attacker.acornsChange} acorns.`
+    : `💔 Lost battle to ${defender.name}. Gained ${result.attacker.xpGained} XP but lost ${Math.abs(result.attacker.acornsChange)} acorns.`;
+  
+  await addDoc(journalRef, {
+    userId: attackerId,
+    message: attackerMessage,
+    timestamp: now,
+    type: 'battle',
+  });
+
+  // Defender's journal entry
+  const defenderMessage = !result.won
+    ? `🎉 Won battle against ${attacker.name}! Gained ${result.defender.xpGained} XP and ${result.defender.acornsChange} acorns.`
+    : `💔 Lost battle to ${attacker.name}. Gained ${result.defender.xpGained} XP but lost ${Math.abs(result.defender.acornsChange)} acorns.`;
+  
+  await addDoc(journalRef, {
+    userId: defender.uid,
+    message: defenderMessage,
+    timestamp: now,
+    type: 'battle',
+  });
+
   return result;
 };

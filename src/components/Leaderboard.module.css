@@ -24,6 +24,14 @@
   overflow-y: auto;
 }
 
+.placeholder {
+  text-align: center;
+  color: #a8e6a1;
+  font-size: 0.9rem;
+  padding: 2rem 1rem;
+  font-style: italic;
+}
+
 .entry {
   display: flex;
   align-items: center;
