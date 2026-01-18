@@ -86,6 +86,24 @@
   color: #ffffff;
 }
 
+.loading,
+.error,
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #e8f5e9;
+  font-size: 1rem;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.empty {
+  color: #a8e6a1;
+  font-style: italic;
+}
+
 @media (max-width: 968px) {
   .container {
     height: auto;

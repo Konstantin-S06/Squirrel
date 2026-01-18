@@ -21,6 +21,7 @@ export interface CanvasAssignment {
     html_url: string;
     submission_types: string[];
     has_submitted_submissions: boolean;
+    submission?: CanvasSubmission;
 }
 
 export interface CanvasSubmission {
@@ -73,8 +74,15 @@ export const fetchCourseAssignments = async (
     courseId: number
 ): Promise<CanvasAssignment[]> => {
     try {
+        // Try to fetch assignments with submission data included (if Canvas API supports it)
+        const params = new URLSearchParams({
+            per_page: '100'
+        });
+        // Try including submission - if it doesn't work, we'll still have assignment data
+        params.append('include[]', 'submission');
+        
         const response = await fetch(
-            `${CANVAS_BASE_URL}/courses/${courseId}/assignments?per_page=100`,
+            `${CANVAS_BASE_URL}/courses/${courseId}/assignments?${params.toString()}`,
             {
                 headers: {
                     'Authorization': `Bearer ${apiToken}`,
@@ -87,7 +95,8 @@ export const fetchCourseAssignments = async (
             throw new Error(`Canvas API Error: ${response.status} ${response.statusText}`);
         }
 
-        return await response.json();
+        const assignments: CanvasAssignment[] = await response.json();
+        return assignments;
     } catch (error) {
         console.error(`Error fetching assignments for course ${courseId}:`, error);
         throw error;
