@@ -9,6 +9,7 @@ interface Friend {
   id: string;
   name: string;
   level: number;
+  xp: number;
   avatarUrl?: string;
 }
 
@@ -58,6 +59,7 @@ const FriendsPage: React.FC = () => {
             id: uid,
             name: friendData.name || 'Unknown',
             level: friendData.level || 1,
+            xp: friendData.xp || 0,
             avatarUrl: friendData.avatarUrl || '',
           } as Friend;
         }
@@ -65,7 +67,11 @@ const FriendsPage: React.FC = () => {
       });
 
       const friendResults = await Promise.all(friendPromises);
-      setFriends(friendResults.filter((f): f is Friend => f !== null));
+      const validFriends = friendResults.filter((f): f is Friend => f !== null);
+      
+      // Sort friends by XP (descending), similar to leaderboard logic
+      const sortedFriends = validFriends.sort((a, b) => b.xp - a.xp);
+      setFriends(sortedFriends);
 
       // Load incoming requests
       const requestPromises = incomingUids.map(async (uid): Promise<IncomingRequest | null> => {
@@ -361,12 +367,16 @@ const FriendsPage: React.FC = () => {
                 <p>No friends yet. Add some friends to get started!</p>
               </div>
             ) : (
-              friends.map((friend) => (
+              friends.map((friend, index) => (
                 <div key={friend.id} className={styles.friendCard}>
+                  <div className={styles.friendRank}>#{index + 1}</div>
                   <div className={styles.squirrelIcon}>🐿️</div>
                   <div className={styles.friendInfo}>
                     <div className={styles.friendName}>{friend.name}</div>
-                    <div className={styles.friendLevel}>Level {friend.level}</div>
+                    <div className={styles.friendStats}>
+                      <div className={styles.friendLevel}>Level {friend.level}</div>
+                      <div className={styles.friendXP}>{friend.xp} XP</div>
+                    </div>
                   </div>
                 </div>
               ))
