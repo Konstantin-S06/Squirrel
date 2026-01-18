@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
+import { syncUserCourses } from '../utils/syncUserCourses';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
@@ -15,6 +16,7 @@ const Header: React.FC = () => {
       
       if (currentUser) {
         await createUserIfNotExists(currentUser);
+        await syncUserCourses(currentUser.uid);
       }
     });
 
@@ -37,6 +39,7 @@ const Header: React.FC = () => {
           canvasApiKey: '',
           shieldEndTime: null,
           lastBattleTime: null,
+          courses: [],
         });
         console.log('User document created');
       }
