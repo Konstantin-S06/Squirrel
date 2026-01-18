@@ -12,29 +12,31 @@
 }
 
 .label {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-family: 'VT323', monospace;
+  font-size: 1.75rem;
+  font-weight: 400;
   color: #7fc97a;
   letter-spacing: 0.5px;
 }
 
 .value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: 'VT323', monospace;
+  font-size: 1.75rem;
+  font-weight: 400;
   color: #a8e6a1;
 }
 
 @media (max-width: 768px) {
   .label,
   .value {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .label,
   .value {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 
   .container {

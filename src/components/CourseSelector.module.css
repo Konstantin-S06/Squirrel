@@ -38,6 +38,48 @@
   outline-offset: 2px;
 }
 
+.loading, .error, .empty {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+.loading {
+  color: #a8e6a1;
+  background: rgba(168, 230, 161, 0.1);
+}
+
+.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.empty {
+  color: #ffd93d;
+  background: rgba(255, 217, 61, 0.1);
+}
+
+.setupButton {
+  margin-top: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  background-color: #7fc97a;
+  color: #1a4d2e;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.setupButton:hover {
+  background-color: #6ab566;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 640px) {
   .container {
     padding: 1rem;

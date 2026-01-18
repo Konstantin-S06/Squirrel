@@ -69,6 +69,35 @@
   font-weight: 500;
 }
 
+.currentUser {
+  background: rgba(127, 201, 122, 0.3);
+  border-color: #7fc97a;
+  box-shadow: 0 0 8px rgba(127, 201, 122, 0.3);
+}
+
+.loading, .error, .empty {
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.loading {
+  color: #a8e6a1;
+  background: rgba(168, 230, 161, 0.1);
+}
+
+.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.empty {
+  color: #ffd93d;
+  background: rgba(255, 217, 61, 0.1);
+}
+
 @media (max-width: 640px) {
   .container {
     padding: 1rem;

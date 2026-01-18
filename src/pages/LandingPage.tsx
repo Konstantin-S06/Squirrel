@@ -23,17 +23,20 @@ const LandingPage: React.FC = () => {
     <div className={styles.container}>
       <Header />
       <main className={styles.main}>
-        <h1 className={styles.title}>Squirrel</h1>
+        <h1 className={styles.title}>SQRL</h1>
         <HeroCircle />
-        <CanvasSetupButton />
-        {user && (
-          <button onClick={() => navigate('/dashboard')} className={styles.dashboardButton}>
-            Dashboard
+        <div className={styles.buttonContainer}>
+          {user ? (
+            <button onClick={() => navigate('/dashboard')} className={styles.dashboardButton}>
+              Dashboard
+            </button>
+          ) : (
+            <CanvasSetupButton />
+          )}
+          <button onClick={() => navigate('/about')} className={styles.aboutButton}>
+            About SQRL
           </button>
-        )}
-        <button onClick={() => navigate('/about')} className={styles.aboutButton}>
-          About Squirrel
-        </button>
+        </div>
       </main>
     </div>
   );

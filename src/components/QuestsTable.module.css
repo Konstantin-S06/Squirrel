@@ -86,6 +86,29 @@
   color: #ffffff;
 }
 
+.loading, .error, .empty {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.loading {
+  color: #a8e6a1;
+  background: rgba(168, 230, 161, 0.1);
+}
+
+.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.empty {
+  color: #ffd93d;
+  background: rgba(255, 217, 61, 0.1);
+}
+
 @media (max-width: 968px) {
   .container {
     height: auto;
