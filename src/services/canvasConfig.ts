@@ -52,7 +52,10 @@ export const fetchCanvasCourses = async (apiToken: string): Promise<CanvasCourse
         }
 
         const courses: CanvasCourse[] = await response.json();
-        return courses.filter(course => course.workflow_state === 'available');
+        return courses.filter(course => 
+            course.workflow_state === 'available' && 
+            (course.enrollment_term_id === 358 || course.enrollment_term_id === 357)
+        );
     } catch (error) {
         console.error('Error fetching Canvas courses:', error);
         throw error;
