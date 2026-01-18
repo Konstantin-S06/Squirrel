@@ -26,29 +26,6 @@
   letter-spacing: 2px;
 }
 
-.dashboardButton {
-  background: rgba(255, 255, 255, 0.95);
-  color: #2d5f3f;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
-  margin-top: 1rem;
-}
-
-.dashboardButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.dashboardButton:active {
-  transform: translateY(0);
-}
-
 .aboutButton {
   background: rgba(255, 255, 255, 0.95);
   color: #2d5f3f;

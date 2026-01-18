@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
-import { isCanvasConnected } from '../services/canvasService';
 import styles from './CanvasSetupPage.module.css';
 
 const CanvasSetupPage: React.FC = () => {
@@ -11,32 +10,6 @@ const CanvasSetupPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
-    const [checkingConnection, setCheckingConnection] = useState(true);
-
-    // Check if Canvas is already connected and redirect if it is
-    useEffect(() => {
-        const checkExistingConnection = async () => {
-            const user = auth.currentUser;
-            if (!user) {
-                setCheckingConnection(false);
-                return;
-            }
-
-            try {
-                const connected = await isCanvasConnected();
-                if (connected) {
-                    // Already connected, redirect to dashboard
-                    navigate('/dashboard');
-                }
-            } catch (error) {
-                console.error('Error checking Canvas connection:', error);
-            } finally {
-                setCheckingConnection(false);
-            }
-        };
-
-        checkExistingConnection();
-    }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -66,16 +39,6 @@ const CanvasSetupPage: React.FC = () => {
             setLoading(false);
         }
     };
-
-    // Show loading state while checking connection
-    if (checkingConnection) {
-        return (
-            <div className={styles.container}>
-                <h1>Connect Canvas LMS</h1>
-                <p className={styles.subtitle}>Checking connection...</p>
-            </div>
-        );
-    }
 
     return (
         <div className={styles.container}>

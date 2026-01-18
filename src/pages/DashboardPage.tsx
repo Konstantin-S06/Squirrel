@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase/firebase';
-import { fetchUserData } from '../services/battleService';
-import { calculateLevel } from '../utils/battleUtils';
 import PlayerStats from '../components/PlayerStats';
 import AvatarCircle from '../components/AvatarCircle';
 import ActionButton from '../components/ActionButton';
@@ -21,49 +18,13 @@ const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [acorns, setAcorns] = useState<number>(0);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [level, setLevel] = useState<number>(1);
-  const [currentXP, setCurrentXP] = useState<number>(0);
-  const [maxXP, setMaxXP] = useState<number>(100);
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Load user data from Firebase
-    const loadUserData = async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const userData = await fetchUserData(user.uid);
-        if (userData) {
-          // Get level and XP from Firebase
-          const userLevel = userData.level || calculateLevel(userData.xp || 0);
-          const userXP = userData.xp || 0;
-          
-          setLevel(userLevel);
-          
-          // Display XP progress: show total XP / XP needed for next level
-          // Level 1 (0-99 XP): show 0-99 / 100 (XP needed for level 2)
-          // Level 2 (100-199 XP): show 100-199 / 200 (XP needed for level 3)
-          // Formula: XP needed for next level = currentLevel * 100
-          setCurrentXP(userXP);
-          setMaxXP(userLevel * 100);
-          
-          // Update acorns from Firebase if available
-          if (userData.acorns !== undefined) {
-            setAcorns(userData.acorns);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUserData();
+    // Load acorns from localStorage or default to 0
+    const savedAcorns = localStorage.getItem('acorns');
+    if (savedAcorns) {
+      setAcorns(parseInt(savedAcorns, 10));
+    }
 
     // Load activities from localStorage or initialize with default
     const savedActivities = localStorage.getItem('activities');
@@ -130,11 +91,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         <main className={styles.main}>
-          {loading ? (
-            <PlayerStats level="Loading..." currentXP="..." maxXP="..." />
-          ) : (
-            <PlayerStats level={level} currentXP={currentXP} maxXP={maxXP} />
-          )}
+          <PlayerStats level="-" currentXP="-" maxXP="-" />
           <AvatarCircle />
           <div className={styles.actions}>
             <ActionButton label="Edit" onClick={handleEdit} variant="primary" />
