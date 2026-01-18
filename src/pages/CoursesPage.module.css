@@ -41,7 +41,8 @@
   margin: 0 auto;
   padding: 2rem;
   margin-top: 60px;
-  height: calc(100vh - 4rem - 60px);
+  min-height: calc(100vh - 4rem - 60px);
+  padding-bottom: 4rem;
 }
 
 .leftColumn {
@@ -66,8 +67,9 @@
   .layout {
     padding: 1.5rem;
     grid-template-columns: 1fr;
-    height: auto;
+    min-height: auto;
     margin-top: 60px;
+    padding-bottom: 3rem;
   }
 
   .leftColumn {
@@ -84,6 +86,7 @@
     padding: 1rem;
     gap: 1rem;
     margin-top: 60px;
+    padding-bottom: 2rem;
   }
 
   .leftColumn {

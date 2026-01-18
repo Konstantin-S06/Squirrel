@@ -1,17 +1,97 @@
 .container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.formContainer {
     max-width: 500px;
     margin: 0 auto;
     padding: 2rem;
-    min-height: 100vh;
+    padding-top: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex: 1;
+}
+
+.formContainer h1 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.connectedContainer {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+}
+
+.connectedContainer h1 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.successIcon {
+    font-size: 4rem;
+    color: #4caf50;
+    background: white;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.loadingContainer {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+}
+
+.loadingContainer p {
+    color: white;
+    font-size: 1.2rem;
 }
 
 .form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .inputGroup {
@@ -39,22 +119,52 @@
 
 .submitButton {
     padding: 1rem;
-    background-color: #007bff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .submitButton:hover:not(:disabled) {
-    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .submitButton:disabled {
-    background-color: #ccc;
+    background: linear-gradient(135deg, #ccc 0%, #999 100%);
     cursor: not-allowed;
+    transform: none;
+}
+
+.dashboardButton {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1rem;
+    min-width: 200px;
+}
+
+.dashboardButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.dashboardButton:active {
+    transform: translateY(0);
 }
 
 .error {
