@@ -11,6 +11,7 @@ import styles from './CoursesPage.module.css';
 const CoursesPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState('CSC110');
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
   const [canvasCourses, setCanvasCourses] = useState<CanvasCourse[]>([]);
   const [loading, setLoading] = useState(true);
   const { getCourses, isConnected, error } = useCanvasData();
@@ -26,7 +27,9 @@ const CoursesPage: React.FC = () => {
         const courses = await getCourses();
         setCanvasCourses(courses);
         if (courses.length > 0) {
-          setSelectedCourse(courses[0].course_code || courses[0].name);
+          const firstCourse = courses[0];
+          setSelectedCourse(firstCourse.course_code || firstCourse.name);
+          setSelectedCourseId(firstCourse.id);
         }
       } catch (err) {
         console.error('Error loading Canvas courses:', err);
@@ -52,13 +55,19 @@ const CoursesPage: React.FC = () => {
           <div className={styles.leftColumn}>
             <CourseSelector
               selectedCourse={selectedCourse}
-              onCourseChange={setSelectedCourse}
+              onCourseChange={(courseCodeOrName: string) => {
+                setSelectedCourse(courseCodeOrName);
+                const course = canvasCourses.find(
+                  c => c.course_code === courseCodeOrName || c.name === courseCodeOrName
+                );
+                setSelectedCourseId(course?.id || null);
+              }}
               courses={canvasCourses}
             />
             <Leaderboard courseName={selectedCourse} />
           </div>
           <div className={styles.rightColumn}>
-            <QuestsTable courseName={selectedCourse} />
+            <QuestsTable courseName={selectedCourse} courseId={selectedCourseId} />
           </div>
         </div>
       )}

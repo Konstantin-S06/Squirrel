@@ -6,6 +6,7 @@ import {
     CanvasCourse,
     CanvasAssignment,
     fetchCanvasCourses,
+    fetchCourseAssignments,
     fetchAllAssignments,
     fetchUpcomingAssignments,
 } from '../services/canvasConfig';
@@ -57,6 +58,13 @@ export const useCanvasData = () => {
         return fetchAllAssignments(apiToken);
     };
 
+    const getCourseAssignments = async (courseId: number): Promise<CanvasAssignment[]> => {
+        if (!apiToken) {
+            throw new Error('Canvas API token not available');
+        }
+        return fetchCourseAssignments(apiToken, courseId);
+    };
+
     const getUpcomingAssignments = async (): Promise<CanvasAssignment[]> => {
         if (!apiToken) {
             throw new Error('Canvas API token not available');
@@ -71,6 +79,7 @@ export const useCanvasData = () => {
         isConnected: !!apiToken,
         getCourses,
         getAssignments,
+        getCourseAssignments,
         getUpcomingAssignments,
     };
 };
