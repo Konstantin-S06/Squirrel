@@ -14,6 +14,8 @@ const EditAvatarPage: React.FC = () => {
   const [acorns, setAcorns] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string>('body');
   const [loading, setLoading] = useState(true);
+  const [name, setName] = useState<string>('');
+  const [isEditingName, setIsEditingName] = useState(false);
 
   useEffect(() => {
     loadUserAvatar();
@@ -37,6 +39,7 @@ const EditAvatarPage: React.FC = () => {
           setUnlockedItems(data.unlockedAvatarItems);
         }
         setAcorns(data.acorns || 0);
+        setName(data.name || 'Squirrel');
       }
     } catch (error) {
       console.error('Error loading avatar:', error);
@@ -80,22 +83,22 @@ const EditAvatarPage: React.FC = () => {
 
     try {
       await updateDoc(doc(db, 'users', user.uid), {
-        avatarParts: parts
+        avatarParts: parts,
+        name: name
       });
-      alert('✅ Avatar saved successfully!');
+      alert('✅ Avatar and name saved successfully!');
+      setIsEditingName(false);
     } catch (error) {
       console.error('Error saving avatar:', error);
       alert('Error saving avatar. Please try again.');
     }
   };
 
-  const handleSave = saveAvatar; // Keep for compatibility
-
   const categories = [
-    { id: 'body', label: '🐿️ Body', emoji: '🐿️' },
-    { id: 'eyes', label: '👀 Eyes', emoji: '👀' },
-    { id: 'mouth', label: '😊 Mouth', emoji: '😊' },
-    { id: 'accessory', label: '🎩 Accessory', emoji: '🎩' }
+    { id: 'body', label: 'Body' },
+    { id: 'eyes', label: 'Eyes' },
+    { id: 'mouth', label: 'Mouth' },
+    { id: 'accessory', label: 'Accessory' }
   ];
 
   const availableItems = AVATAR_CATALOG.filter(
@@ -115,7 +118,33 @@ const EditAvatarPage: React.FC = () => {
       <Header />
 
       <div className={styles.content}>
-        <h1 className={styles.title}>🎨 Avatar Builder</h1>
+        <div className={styles.titleSection}>
+          {isEditingName ? (
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => setIsEditingName(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setIsEditingName(false);
+                  saveAvatar();
+                }
+              }}
+              className={styles.nameInput}
+              maxLength={20}
+              autoFocus
+            />
+          ) : (
+            <h1
+              className={styles.title}
+              onClick={() => setIsEditingName(true)}
+              title="Click to edit your name"
+            >
+              {name || 'Click to set name'} ✏️
+            </h1>
+          )}
+        </div>
         <p className={styles.acorns}>🌰 {acorns} Acorns</p>
 
         <div className={styles.preview}>
@@ -135,7 +164,7 @@ const EditAvatarPage: React.FC = () => {
               onClick={() => setSelectedCategory(cat.id)}
               className={`${styles.categoryButton} ${selectedCategory === cat.id ? styles.active : ''}`}
             >
-              {cat.emoji} {cat.id}
+              {cat.label}
             </button>
           ))}
         </div>
