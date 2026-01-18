@@ -11,26 +11,44 @@
   position: absolute;
   top: 100px;
   left: 2rem;
-  background: rgba(255, 255, 255, 0.95);
-  color: #2d5f3f;
+  font-family: 'VT323', monospace;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
+  border-radius: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s;
   z-index: 10;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
 }
 
 .backButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.backButton:active {
-  transform: translateY(0);
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
 }
 
 .layout {
@@ -57,12 +75,13 @@
 }
 
 .loading, .error {
+  font-family: 'VT323', monospace;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 50vh;
-  color: white;
-  font-size: 1.2rem;
+  color: #a8e6a1;
+  font-size: 1.5rem;
   text-align: center;
   padding: 2rem;
 }
@@ -118,6 +137,6 @@
     left: 1rem;
     top: 90px;
     padding: 0.625rem 1rem;
-    font-size: 0.9rem;
+    font-size: 1.125rem;
   }
 }

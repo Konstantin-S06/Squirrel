@@ -1,20 +1,36 @@
 .container {
-  background: rgba(58, 125, 92, 0.4);
-  border: 2px solid #7fc97a;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: rgba(74, 157, 111, 0.6);
+  border-radius: 0;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(255, 255, 255, 0.2),
+    4px 0 0 0 rgba(255, 255, 255, 0.2),
+    0 -4px 0 0 rgba(255, 255, 255, 0.2),
+    0 4px 0 0 rgba(255, 255, 255, 0.2);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .title {
+  font-family: 'Press Start 2P', cursive;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #a8e6a1;
-  margin: 0 0 1rem 0;
-  letter-spacing: 1px;
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .list {
@@ -25,9 +41,10 @@
 }
 
 .placeholder {
+  font-family: 'VT323', monospace;
   text-align: center;
   color: #a8e6a1;
-  font-size: 0.9rem;
+  font-size: 1.125rem;
   padding: 2rem 1rem;
   font-style: italic;
 }
@@ -50,11 +67,13 @@
 }
 
 .rank {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  font-weight: 400;
   color: #ffd700;
   min-width: 36px;
   text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .info {
@@ -65,16 +84,17 @@
 }
 
 .username {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-family: 'VT323', monospace;
+  font-size: 1.125rem;
+  font-weight: 400;
   color: #e8f5e9;
-  letter-spacing: 0.3px;
 }
 
 .stats {
-  font-size: 0.8rem;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
   color: #a8e6a1;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .currentUser {
@@ -84,9 +104,10 @@
 }
 
 .loading, .error, .empty {
+  font-family: 'VT323', monospace;
   padding: 2rem;
   text-align: center;
-  font-size: 0.95rem;
+  font-size: 1.25rem;
   border-radius: 8px;
   margin-top: 1rem;
 }
@@ -108,11 +129,11 @@
 
 @media (max-width: 640px) {
   .container {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .title {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 
   .entry {
@@ -121,15 +142,15 @@
   }
 
   .rank {
-    font-size: 1rem;
+    font-size: 0.875rem;
     min-width: 32px;
   }
 
   .username {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   .stats {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 }
