@@ -1,10 +1,9 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
 
+// CORS Proxy for hackathon (quick & dirty solution)
+const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 const CANVAS_DOMAIN = 'https://q.utoronto.ca';
-// Backend proxy URL - change this to your production URL when deployed
-const PROXY_URL = process.env.REACT_APP_PROXY_URL || 'http://localhost:3001';
-const USE_PROXY = process.env.REACT_APP_USE_PROXY !== 'false'; // Default to true
 
 export interface CanvasCourse {
   id: number;
@@ -50,8 +49,7 @@ async function getCanvasApiKey(): Promise<string | null> {
 }
 
 /**
- * Makes an authenticated request to Canvas API
- * Uses backend proxy if available, otherwise tries direct connection
+ * Makes an authenticated request to Canvas API using CORS proxy
  */
 async function canvasRequest(endpoint: string): Promise<any> {
   const apiKey = await getCanvasApiKey();
@@ -59,112 +57,28 @@ async function canvasRequest(endpoint: string): Promise<any> {
     throw new Error('Canvas API key not found. Please connect your Canvas account.');
   }
 
-  // Use proxy if enabled
-  // NOTE: In development, the React dev server's setupProxy.js automatically
-  // proxies /api/* requests to the backend. So we use relative paths.
-  if (USE_PROXY) {
-    try {
-      // Use relative path - setupProxy.js will forward to backend
-      // This works in development and can be configured for production
-      const proxyEndpoint = `/api/canvas${endpoint}`;
-      const response = await fetch(proxyEndpoint, {
-        method: 'GET',
-        headers: {
-          'X-Canvas-API-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // Check content type and handle HTML responses (proxy server not running)
-      const contentType = response.headers.get('content-type') || '';
-      
-      // Handle non-OK responses
-      if (!response.ok) {
-        // Clone response to read text without consuming it
-        const responseClone = response.clone();
-        const text = await responseClone.text();
-        
-        // Check if we got HTML instead of JSON (backend not running or proxy misconfigured)
-        if (text.includes('<!DOCTYPE') || text.includes('<html') || contentType.includes('text/html')) {
-          if (response.status === 404) {
-            throw new Error(
-              'Backend API endpoint not found. ' +
-              'Make sure the backend server is running: npm run server'
-            );
-          }
-          throw new Error(
-            'Backend server returned HTML instead of JSON. ' +
-            'This usually means the backend server is not running. ' +
-            'Please start it with: npm run server (port 3001)'
-          );
-        }
-        
-        // Try to parse as JSON error
-        try {
-          const errorData = JSON.parse(text);
-          throw new Error(errorData.error || `Canvas API error (${response.status}): ${response.statusText}`);
-        } catch (parseError: any) {
-          throw new Error(`Canvas API error (${response.status}): ${response.statusText}`);
-        }
-      }
-
-      // Verify response is JSON before parsing
-      if (!contentType.includes('application/json')) {
-        const text = await response.text();
-        if (text.includes('<!DOCTYPE') || text.includes('<html')) {
-          throw new Error(
-            'Backend server returned HTML instead of JSON. ' +
-            'Please start the backend server with: npm run server'
-          );
-        }
-        throw new Error(
-          `Expected JSON response but got ${contentType}. ` +
-          'Backend server may not be configured correctly.'
-        );
-      }
-
-      // Parse JSON response
-      return response.json();
-    } catch (error: any) {
-      // If proxy fails with a clear message, throw it
-      if (error.message.includes('proxy server') || error.message.includes('Backend')) {
-        throw error;
-      }
-      // Otherwise, log and fall back to direct connection attempt
-      console.warn('Proxy request failed, trying direct connection:', error.message);
-      // Continue to direct connection attempt below
-    }
-  }
-
-  // Direct connection (may fail due to CORS)
   try {
-    const response = await fetch(`${CANVAS_DOMAIN}${endpoint}`, {
+    const url = `${CORS_PROXY}${CANVAS_DOMAIN}${endpoint}`;
+    console.log('Making Canvas API request to:', url.replace(apiKey, '***'));
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      mode: 'cors',
-      credentials: 'omit',
     });
 
     if (!response.ok) {
       if (response.status === 401 || response.status === 403) {
-        throw new Error('Invalid Canvas API key. Please reconnect your Canvas account.');
+        throw new Error('Invalid Canvas API key. Please check your API token.');
       }
-      const errorText = await response.text();
       throw new Error(`Canvas API error (${response.status}): ${response.statusText}`);
     }
 
     return response.json();
   } catch (error: any) {
-    // Handle CORS or network errors
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      throw new Error(
-        'Failed to connect to Canvas. CORS error detected. ' +
-        'Please start the backend proxy server (npm run server) or ensure it\'s running.'
-      );
-    }
+    console.error('Canvas API request failed:', error);
     throw error;
   }
 }
@@ -185,41 +99,14 @@ export async function isCanvasConnected(): Promise<boolean> {
  * Tests the Canvas API connection with a simple request
  */
 export async function testCanvasConnection(apiKey: string): Promise<boolean> {
-  // Try proxy first if enabled
-  if (USE_PROXY) {
-    try {
-      const response = await fetch(`${PROXY_URL}/api/canvas/api/v1/users/self`, {
-        method: 'GET',
-        headers: {
-          'X-Canvas-API-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      // Check if response is HTML (proxy server error)
-      const contentType = response.headers.get('content-type') || '';
-      if (contentType.includes('text/html')) {
-        console.warn('Proxy server returned HTML, may not be running');
-        return false;
-      }
-      
-      return response.ok;
-    } catch (error: any) {
-      console.warn('Proxy connection test failed:', error.message);
-      // Fall through to direct connection
-    }
-  }
-
-  // Try direct connection
   try {
-    const response = await fetch(`${CANVAS_DOMAIN}/api/v1/users/self`, {
+    const url = `${CORS_PROXY}${CANVAS_DOMAIN}/api/v1/users/self`;
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      mode: 'cors',
-      credentials: 'omit',
     });
 
     return response.ok;
@@ -231,78 +118,22 @@ export async function testCanvasConnection(apiKey: string): Promise<boolean> {
 
 /**
  * Fetches all active courses for the current user from Canvas
- * Uses access_token as query parameter via backend proxy to avoid CORS
+ * Uses CORS proxy to avoid CORS issues
  */
 export async function fetchCanvasCourses(): Promise<CanvasCourse[]> {
   try {
-    // Get API token from Firebase
-    const apiKey = await getCanvasApiKey();
-    if (!apiKey) {
-      throw new Error('Canvas API key not found. Please connect your Canvas account.');
-    }
+    const courses = await canvasRequest('/api/v1/courses?enrollment_state=active&per_page=100');
 
-    // Use backend proxy to avoid CORS issues
-    // The proxy server makes the request server-side where CORS doesn't apply
-    const proxyUrl = `${PROXY_URL}/api/canvas/courses?access_token=${apiKey}&enrollment_state=active&per_page=100`;
-    
-    console.log('🔍 Making Canvas API call via proxy:');
-    console.log('   URL:', proxyUrl.replace(apiKey, '***'));
-    console.log('   API Key length:', apiKey.length);
-    console.log('   API Key first 10 chars:', apiKey.substring(0, 10));
-    
-    const response = await fetch(proxyUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    console.log('📥 Response status:', response.status);
-    console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
-
-    // Check if we got HTML (backend not running)
-    const contentType = response.headers.get('content-type') || '';
-    if (contentType.includes('text/html')) {
-      const text = await response.text();
-      if (text.includes('<!DOCTYPE') || text.includes('<html')) {
-        throw new Error(
-          'Backend server not running. ' +
-          'Please start it with: npm install && npm run server'
-        );
-      }
-    }
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      try {
-        const errorData = JSON.parse(errorText);
-        throw new Error(errorData.error || `Canvas API error (${response.status}): ${response.statusText}`);
-      } catch {
-        throw new Error(`Canvas API error (${response.status}): ${errorText || response.statusText}`);
-      }
-    }
-
-    const courses = await response.json();
-    
     console.log('✅ Canvas API call successful!');
     console.log(`Received ${courses.length} courses:`, courses);
-    
+
     // Filter out courses without names (deleted/invalid courses)
     const validCourses = courses.filter((course: CanvasCourse) => course.name && course.course_code);
     console.log(`Filtered to ${validCourses.length} valid courses`);
-    
+
     return validCourses;
   } catch (error: any) {
     console.error('❌ Error fetching Canvas courses:', error);
-    
-    // Provide helpful error message
-    if (error.message.includes('fetch') || error.name === 'TypeError') {
-      throw new Error(
-        'Failed to connect to backend server. ' +
-        'Make sure the backend is running: npm install && npm run server'
-      );
-    }
-    
     throw error;
   }
 }
@@ -331,6 +162,157 @@ export async function fetchCourseDetails(courseId: number): Promise<CanvasCourse
     return course;
   } catch (error) {
     console.error(`Error fetching course details for ${courseId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Canvas Submission Interface
+ */
+export interface CanvasSubmission {
+  id: number;
+  assignment_id: number;
+  user_id: number;
+  submitted_at: string | null;
+  score: number | null;
+  grade: string | null;
+  late: boolean;
+  workflow_state: string;
+}
+
+/**
+ * Milestone Stats Interface
+ */
+export interface MilestoneStats {
+  total: number;
+  completed: number;
+  completedEarly: number;
+  completedLate: number;
+  pending: number;
+  earlyCompletionRate: number; // Percentage
+}
+
+/**
+ * Fetches submissions for a specific course (for current user)
+ */
+export async function fetchCourseSubmissions(courseId: number): Promise<CanvasSubmission[]> {
+  try {
+    // Get current user first
+    const user = await canvasRequest('/api/v1/users/self');
+
+    // Fetch submissions for this user
+    const submissions = await canvasRequest(
+      `/api/v1/courses/${courseId}/students/submissions?student_ids[]=${user.id}&per_page=100`
+    );
+    return submissions;
+  } catch (error) {
+    console.error(`Error fetching submissions for course ${courseId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Calculate milestone completion statistics
+ * Used for battle "Common Ground" feature
+ */
+export function calculateMilestoneStats(
+  assignments: CanvasAssignment[],
+  submissions: CanvasSubmission[]
+): MilestoneStats {
+  const submissionMap = new Map(
+    submissions.map((sub) => [sub.assignment_id, sub])
+  );
+
+  let completed = 0;
+  let completedEarly = 0;
+  let completedLate = 0;
+  let pending = 0;
+
+  assignments.forEach((assignment) => {
+    const submission = submissionMap.get(assignment.id);
+
+    if (submission && submission.workflow_state === 'graded') {
+      completed++;
+      if (submission.late) {
+        completedLate++;
+      } else {
+        completedEarly++;
+      }
+    } else {
+      pending++;
+    }
+  });
+
+  const earlyCompletionRate =
+    completed > 0 ? Math.round((completedEarly / completed) * 100) : 0;
+
+  return {
+    total: assignments.length,
+    completed,
+    completedEarly,
+    completedLate,
+    pending,
+    earlyCompletionRate,
+  };
+}
+
+/**
+ * Fetch user's profile from Canvas
+ */
+export async function fetchCanvasProfile(): Promise<any> {
+  try {
+    const profile = await canvasRequest('/api/v1/users/self');
+    return profile;
+  } catch (error) {
+    console.error('Error fetching Canvas profile:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get all course data including assignments and submissions
+ * Useful for comprehensive stats and Common Ground feature
+ */
+export async function fetchAllCourseData() {
+  try {
+    const courses = await fetchCanvasCourses();
+
+    const courseDataPromises = courses.map(async (course) => {
+      try {
+        const [assignments, submissions] = await Promise.all([
+          fetchCourseAssignments(course.id),
+          fetchCourseSubmissions(course.id),
+        ]);
+
+        const stats = calculateMilestoneStats(assignments, submissions);
+
+        return {
+          course,
+          assignments,
+          submissions,
+          stats,
+        };
+      } catch (error) {
+        console.error(`Error fetching data for course ${course.id}:`, error);
+        return {
+          course,
+          assignments: [],
+          submissions: [],
+          stats: {
+            total: 0,
+            completed: 0,
+            completedEarly: 0,
+            completedLate: 0,
+            pending: 0,
+            earlyCompletionRate: 0,
+          },
+        };
+      }
+    });
+
+    return await Promise.all(courseDataPromises);
+  } catch (error) {
+    console.error('Error fetching all course data:', error);
     throw error;
   }
 }

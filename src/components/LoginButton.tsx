@@ -6,7 +6,7 @@ import styles from './LoginButton.module.css';
 const LoginButton: React.FC = () => {
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
-    
+
     try {
       const result = await signInWithPopup(auth, provider);
       console.log('Authenticated user:', result.user);
