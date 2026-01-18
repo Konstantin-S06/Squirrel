@@ -1,8 +1,9 @@
 .button {
+  font-family: 'VT323', monospace;
   width: 100%;
   padding: 0.875rem 2rem;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 400;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -43,13 +44,13 @@
 @media (max-width: 768px) {
   .button {
     padding: 0.75rem 1.75rem;
-    font-size: 1rem;
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .button {
     padding: 0.625rem 1.5rem;
-    font-size: 0.9rem;
+    font-size: 1.25rem;
   }
 }

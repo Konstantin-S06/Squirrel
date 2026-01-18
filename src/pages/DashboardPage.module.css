@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a4d2e 0%, #2d5f3f 100%);
+  background: url('../assets/backgrounds/forest.gif') center/cover no-repeat;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -31,13 +31,14 @@
 }
 
 .friendsButton {
+  font-family: 'VT323', monospace;
   background: rgba(255, 255, 255, 0.95);
   color: #2d5f3f;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 1.5rem;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;
@@ -53,13 +54,14 @@
 }
 
 .coursesButton {
+  font-family: 'VT323', monospace;
   background: rgba(255, 255, 255, 0.95);
   color: #2d5f3f;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 1.5rem;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s, box-shadow 0.2s;

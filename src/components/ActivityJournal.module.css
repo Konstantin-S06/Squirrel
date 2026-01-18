@@ -1,4 +1,5 @@
 .container {
+  font-family: 'VT323', monospace;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -10,12 +11,13 @@
 }
 
 .header {
+  font-family: 'VT323', monospace;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 1.25rem;
   border-bottom: 2px solid #e0e0e0;
-  font-weight: 700;
+  font-weight: 400;
   color: #2d5f3f;
 }
 
@@ -24,7 +26,8 @@
 }
 
 .title {
-  font-size: 1.1rem;
+  font-family: 'VT323', monospace;
+  font-size: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -36,10 +39,12 @@
 }
 
 .empty {
+  font-family: 'VT323', monospace;
   padding: 2rem;
   text-align: center;
   color: #999;
   font-style: italic;
+  font-size: 1.25rem;
 }
 
 .activities {
@@ -61,8 +66,9 @@
 }
 
 .activityMessage {
+  font-family: 'VT323', monospace;
   color: #333;
-  font-size: 0.95rem;
+  font-size: 1.25rem;
   margin-bottom: 0.25rem;
   line-height: 1.4;
 }
@@ -75,7 +81,8 @@
 }
 
 .activityTime {
-  font-size: 0.75rem;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
   color: #666;
   font-style: italic;
 }

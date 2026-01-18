@@ -1,4 +1,5 @@
 .container {
+  font-family: 'VT323', monospace;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -6,7 +7,7 @@
   padding: 0.75rem 1.25rem;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  font-weight: 600;
+  font-weight: 400;
   color: #2d5f3f;
 }
 
@@ -15,14 +16,16 @@
 }
 
 .label {
-  font-size: 0.9rem;
+  font-family: 'VT323', monospace;
+  font-size: 1.25rem;
   text-transform: lowercase;
   color: #666;
 }
 
 .value {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-family: 'VT323', monospace;
+  font-size: 1.75rem;
+  font-weight: 400;
   color: #2d5f3f;
   min-width: 30px;
   text-align: right;
