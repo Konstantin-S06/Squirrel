@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { auth } from '../firebase/firebase';
 import { fetchUserData, findRandomOpponent, executeBattle } from '../services/battleService';
-import { getTimeUntilNextBattle, getShieldTimeRemaining, canBattle } from '../utils/battleUtils';
+import { getShieldTimeRemaining } from '../utils/battleUtils';
 import BattleResultModal from '../components/BattleResultModal';
 import styles from './BattlePage.module.css';
 
@@ -22,13 +22,12 @@ interface BattleResultData {
 const BattlePage: React.FC = () => {
   const navigate = useNavigate();
   const [shieldTime, setShieldTime] = useState<number>(0); // Shield timer in seconds
-  const [resetTime, setResetTime] = useState<number>(0); // Battle reset timer in seconds
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [showResultModal, setShowResultModal] = useState<boolean>(false);
   const [battleResult, setBattleResult] = useState<BattleResultData | null>(null);
 
-  // Load timers from Firestore
+  // Load shield timer from Firestore
   useEffect(() => {
     const loadTimers = async () => {
       const user = auth.currentUser;
@@ -38,18 +37,14 @@ const BattlePage: React.FC = () => {
       if (!userData) return;
 
       const shieldRemaining = getShieldTimeRemaining(userData.shieldEndTime);
-      const battleRemaining = getTimeUntilNextBattle(userData.lastBattleTime);
-
       setShieldTime(shieldRemaining);
-      setResetTime(battleRemaining);
     };
 
     loadTimers();
 
-    // Update timers every second
+    // Update shield timer every second
     const interval = setInterval(() => {
       setShieldTime((prev) => Math.max(0, prev - 1));
-      setResetTime((prev) => Math.max(0, prev - 1));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -82,13 +77,6 @@ const BattlePage: React.FC = () => {
         return;
       }
 
-      // Check if user can battle (8 hour cooldown)
-      if (!canBattle(userData.lastBattleTime)) {
-        setError('Battle cooldown not expired yet!');
-        setIsLoading(false);
-        return;
-      }
-
       // Find random opponent
       const opponent = await findRandomOpponent(user.uid);
       if (!opponent) {
@@ -107,10 +95,6 @@ const BattlePage: React.FC = () => {
         acornsChange: result.attacker.acornsChange,
         opponentData: result.opponentData,
       });
-
-      // Update timers (8 hours from now)
-      const eightHoursInSeconds = 8 * 60 * 60;
-      setResetTime(eightHoursInSeconds);
 
       // Show results modal
       setShowResultModal(true);
@@ -149,20 +133,12 @@ const BattlePage: React.FC = () => {
         <button
           className={styles.battleRandomButton}
           onClick={handleBattleRandom}
-          disabled={resetTime > 0 || isLoading}
+          disabled={isLoading}
         >
           {isLoading ? 'Battling...' : 'Battle Random'}
         </button>
         {error && <div className={styles.errorMessage}>{error}</div>}
       </div>
-
-        {/* Battle Reset Timer - Bottom Left */}
-        <div className={styles.resetTimer}>
-          <div className={styles.timerLabel}>Battle Reset</div>
-          <div className={styles.timerValue}>
-            {resetTime > 0 ? formatTime(resetTime) : 'Ready'}
-          </div>
-        </div>
 
         {/* Squirrel with Toy Sword - Bottom Right */}
         <div className={styles.squirrelContainer}>
