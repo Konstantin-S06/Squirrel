@@ -298,6 +298,11 @@ const BattlePage: React.FC = () => {
           >
             {isLoading ? 'Battling...' : 'Battle Random'}
           </button>
+          {error && (
+            <div className={styles.errorMessage} style={{ marginTop: '1rem' }}>
+              {error}
+            </div>
+          )}
         </div>
 
         {/* Battle Log Section */}
@@ -342,8 +347,6 @@ const BattlePage: React.FC = () => {
           )}
         </div>
 
-        {/* Messages */}
-        {error && <div className={styles.errorMessage}>{error}</div>}
       </main>
 
       {/* Battle Result Modal */}
