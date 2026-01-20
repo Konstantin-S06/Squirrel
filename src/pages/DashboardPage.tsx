@@ -271,6 +271,10 @@ const DashboardPage: React.FC = () => {
     navigate('/courses');
   };
 
+  const handleUpdateCanvasKey = () => {
+    navigate('/canvas-setup?update=1');
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.headerWrapper}>
@@ -284,6 +288,9 @@ const DashboardPage: React.FC = () => {
           </button>
           <button onClick={handleCourses} className={styles.coursesButton}>
             📚 Courses
+          </button>
+          <button onClick={handleUpdateCanvasKey} className={styles.canvasButton}>
+            🔑 Update Canvas Key
           </button>
           <Timetable />
         </div>
