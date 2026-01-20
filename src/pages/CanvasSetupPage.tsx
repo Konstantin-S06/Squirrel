@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase';
 import { validateCanvasToken, fetchCanvasCourses } from '../services/canvasConfig';
@@ -9,12 +9,14 @@ import styles from './CanvasSetupPage.module.css';
 
 const CanvasSetupPage: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [apiKey, setApiKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [hasExistingKey, setHasExistingKey] = useState(false);
     const [checkingKey, setCheckingKey] = useState(true);
+    const forceUpdate = new URLSearchParams(location.search).get('update') === '1';
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -95,7 +97,7 @@ const CanvasSetupPage: React.FC = () => {
         );
     }
 
-    if (hasExistingKey) {
+    if (hasExistingKey && !forceUpdate) {
         return (
             <div className={styles.container}>
                 <Header />
@@ -108,6 +110,13 @@ const CanvasSetupPage: React.FC = () => {
                         className={styles.dashboardButton}
                     >
                         Go to Dashboard
+                    </button>
+                    <button
+                        onClick={() => navigate('/canvas-setup?update=1')}
+                        className={styles.dashboardButton}
+                        style={{ marginTop: '12px' }}
+                    >
+                        Update Canvas Token
                     </button>
                 </div>
             </div>

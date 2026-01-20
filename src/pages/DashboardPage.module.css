@@ -120,6 +120,51 @@
   transform: translateY(0);
 }
 
+.canvasButton {
+  font-family: 'Press Start 2P', cursive;
+  background: rgba(74, 157, 111, 0.6);
+  color: #a8e6a1;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  font-weight: 400;
+  font-size: 1.5rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s, background 0.2s;
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 15px 60px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
+}
+
+.canvasButton:hover {
+  transform: translateY(-2px);
+  background: rgba(74, 157, 111, 0.8);
+  box-shadow:
+    0 0 0 2px rgba(127, 201, 122, 0.5),
+    0 20px 80px rgba(0, 0, 0, 1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    -4px 0 0 0 rgba(127, 201, 122, 0.5),
+    4px 0 0 0 rgba(127, 201, 122, 0.5),
+    0 -4px 0 0 rgba(127, 201, 122, 0.5),
+    0 4px 0 0 rgba(127, 201, 122, 0.5);
+}
+
+.canvasButton:active {
+  transform: translateY(0);
+}
+
 /* Top Right Section: Acorn Counter & Journal */
 .topRightSection {
   position: absolute;
