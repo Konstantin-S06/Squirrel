@@ -1,5 +1,7 @@
 // Canvas API Configuration and Service
 const CANVAS_BASE_URL = 'https://q.utoronto.ca/api/v1';
+const PROXY_URL = process.env.REACT_APP_PROXY_URL || 'http://localhost:3001/api/canvas';
+const USE_PROXY = true; // Set to false to use direct Canvas API (requires CORS disabled)
 
 export interface CanvasCourse {
     id: number;
@@ -41,24 +43,50 @@ export interface CanvasSubmission {
  */
 export const fetchCanvasCourses = async (apiToken: string): Promise<CanvasCourse[]> => {
     try {
-        const response = await fetch(`${CANVAS_BASE_URL}/courses?enrollment_state=active&per_page=100`, {
+        const url = USE_PROXY
+            ? `${PROXY_URL}/api/v1/courses?enrollment_state=active&per_page=100`
+            : `${CANVAS_BASE_URL}/courses?enrollment_state=active&per_page=100`;
+
+        console.log('Fetching Canvas courses from:', USE_PROXY ? 'proxy' : 'direct', url);
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${apiToken}`,
                 'Content-Type': 'application/json',
             },
         });
 
+        console.log('Canvas courses response status:', response.status);
+
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Canvas API Error Response:', errorText);
             throw new Error(`Canvas API Error: ${response.status} ${response.statusText}`);
         }
 
         const courses: CanvasCourse[] = await response.json();
-        return courses.filter(course => 
-            course.workflow_state === 'available' && 
+        console.log(`Fetched ${courses.length} total courses from Canvas`);
+
+        const filteredCourses = courses.filter(course =>
+            course.workflow_state === 'available' &&
             (course.enrollment_term_id === 358 || course.enrollment_term_id === 357)
         );
-    } catch (error) {
+
+        console.log(`Filtered to ${filteredCourses.length} available courses`);
+        return filteredCourses;
+    } catch (error: any) {
         console.error('Error fetching Canvas courses:', error);
+
+        // Check if it's a CORS or network error
+        if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+            console.error('🚨 Network Error: Cannot connect to', USE_PROXY ? 'proxy server' : 'Canvas API');
+            if (USE_PROXY) {
+                throw new Error('Cannot connect to proxy server. Make sure it is running on port 3001.');
+            } else {
+                throw new Error('CORS error: Unable to connect to Canvas. The browser is blocking the request.');
+            }
+        }
+
         throw error;
     }
 };
@@ -81,15 +109,16 @@ export const fetchCourseAssignments = async (
         // Try including submission - if it doesn't work, we'll still have assignment data
         params.append('include[]', 'submission');
         
-        const response = await fetch(
-            `${CANVAS_BASE_URL}/courses/${courseId}/assignments?${params.toString()}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        const url = USE_PROXY
+            ? `${PROXY_URL}/api/v1/courses/${courseId}/assignments?${params.toString()}`
+            : `${CANVAS_BASE_URL}/courses/${courseId}/assignments?${params.toString()}`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${apiToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
 
         if (!response.ok) {
             throw new Error(`Canvas API Error: ${response.status} ${response.statusText}`);
@@ -136,15 +165,16 @@ export const fetchAssignmentSubmission = async (
     assignmentId: number
 ): Promise<CanvasSubmission> => {
     try {
-        const response = await fetch(
-            `${CANVAS_BASE_URL}/courses/${courseId}/assignments/${assignmentId}/submissions/self`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        const url = USE_PROXY
+            ? `${PROXY_URL}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions/self`
+            : `${CANVAS_BASE_URL}/courses/${courseId}/assignments/${assignmentId}/submissions/self`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${apiToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
 
         if (!response.ok) {
             throw new Error(`Canvas API Error: ${response.status} ${response.statusText}`);
@@ -190,16 +220,41 @@ export const fetchUpcomingAssignments = async (apiToken: string): Promise<Canvas
  */
 export const validateCanvasToken = async (apiToken: string): Promise<boolean> => {
     try {
-        const response = await fetch(`${CANVAS_BASE_URL}/users/self`, {
+        const url = USE_PROXY
+            ? `${PROXY_URL}/api/v1/users/self`
+            : `${CANVAS_BASE_URL}/users/self`;
+
+        console.log('Attempting to validate token with Canvas API via', USE_PROXY ? 'proxy' : 'direct');
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${apiToken}`,
                 'Content-Type': 'application/json',
             },
         });
 
+        console.log('Canvas validation response status:', response.status);
+
+        if (!response.ok) {
+            console.error(`Canvas API returned error: ${response.status} ${response.statusText}`);
+        }
+
         return response.ok;
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error validating Canvas token:', error);
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+
+        // Check if it's a CORS or network error
+        if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+            if (USE_PROXY) {
+                console.error('🚨 Cannot connect to proxy server. Make sure it is running on port 3001');
+            } else {
+                console.error('🚨 CORS or Network Error: The browser blocked the request to Canvas API');
+                console.error('This usually means CORS is enabled or there\'s a network issue');
+            }
+        }
+
         return false;
     }
 };
